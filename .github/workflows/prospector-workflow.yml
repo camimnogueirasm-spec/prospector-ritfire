@@ -17,9 +17,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Rodar Prospector
+   - name: Rodar Prospector
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: |
-          sed -i "s/COLE_SUA_GROQ_API_KEY_AQUI/$GROQ_API_KEY/" prospector.py
-          python prospector.py
+        run: python prospector.py
