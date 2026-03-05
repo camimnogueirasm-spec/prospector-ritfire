@@ -1,56 +1,57 @@
 {
-  "resumo": "A Ritfire Isolamentos pode aproveitar oportunidades em obras de grande porte no Brasil, especialmente em setores como petroquímica, frigoríficos e construção civil.",
+  "resumo": "O mercado brasileiro apresenta oportunidades significativas para a empresa Ritfire Isolamentos, especialmente em projetos de infraestrutura, petroquímica e construção civil.",
   "oportunidades": [
     {
-      "titulo": "Isolamento Térmico para Nova Planta da Braskem",
+      "titulo": "Isolamento Térmico para Nova Planta Petroquímica da Braskem",
       "tipo": "obra",
-      "descricao": "A Braskem está investindo em uma nova planta de produção de polipropileno em Mauá, São Paulo. Essa obra requer isolamento térmico de alta qualidade para garantir a eficiência energética e a segurança. A Ritfire Isolamentos pode oferecer seus serviços e materiais para atender a essa demanda.",
-      "localizacao": "Mauá, São Paulo",
+      "descricao": "A Braskem está investindo em uma nova planta petroquímica em Maceió, Alagoas, que requer serviços de isolamento térmico de alta qualidade. A Ritfire Isolamentos pode oferecer seus materiais e serviços especializados para atender às necessidades dessa obra. O projeto está em fase de licitação e a escolha do fornecedor deve ser feita nos próximos meses.",
+      "localizacao": "Maceió, Alagoas",
       "valor_estimado": "A consultar",
-      "prazo": "Em andamento, com previsão de conclusão para 2025",
+      "prazo": "Fase de licitação",
       "urgencia": "ALTA",
-      "como_abordar": "Contatar o departamento de compras da Braskem para agendar uma reunião e apresentar os serviços e materiais da Ritfire Isolamentos."
+      "como_abordar": "Contatar o departamento de compras da Braskem, via telefone ou e-mail, para agendar uma reunião e apresentar as soluções da Ritfire Isolamentos."
     },
     {
-      "titulo": "Licitação para Isolamento Térmico em Obras do PAC",
+      "titulo": "Licitacao para Fornecimento de Materiais de Isolamento Térmico para Obras do PAC",
       "tipo": "licitacao",
-      "descricao": "O governo federal lançou uma licitação para a contratação de serviços de isolamento térmico para obras do Programa de Aceleração do Crescimento (PAC) em várias regiões do país. A Ritfire Isolamentos pode participar desse processo licitatório e oferecer seus serviços.",
-      "localizacao": "Várias regiões do Brasil",
-      "valor_estimado": "R$ 10 milhões",
-      "prazo": "Abertura dos envelopes em 30 dias",
-      "urgencia": "ALTA",
-      "como_abordar": "Acessar o site do ComprasNet e verificar os detalhes da licitação, além de contatar o órgão responsável para obter mais informações."
-    },
-    {
-      "titulo": "Isolamento Térmico para Nova Unidade da JBS",
-      "tipo": "obra",
-      "descricao": "A JBS está investindo em uma nova unidade de processamento de carne em São Paulo. Essa obra requer isolamento térmico para garantir a conservação da carne e a eficiência energética. A Ritfire Isolamentos pode oferecer seus serviços e materiais para atender a essa demanda.",
-      "localizacao": "São Paulo",
-      "valor_estimado": "R$ 500 mil",
-      "prazo": "Em andamento, com previsão de conclusão para 2024",
+      "descricao": "O governo federal lançou uma licitação para o fornecimento de materiais de isolamento térmico para obras do Programa de Aceleração do Crescimento (PAC). A Ritfire Isolamentos pode se candidatar a essa licitação e oferecer seus produtos e serviços. A licitação está disponível no site do ComprasNet.",
+      "localizacao": "Brasília, Distrito Federal",
+      "valor_estimado": "R$ 1.000.000,00",
+      "prazo": "Licitacao em andamento",
       "urgencia": "MÉDIA",
-      "como_abordar": "Contatar o departamento de compras da JBS para agendar uma reunião e apresentar os serviços e materiais da Ritfire Isolamentos."
+      "como_abordar": "Acessar o site do ComprasNet, verificar os requisitos da licitação e preparar a documentação necessária para se candidatar."
     },
     {
-      "titulo": "Parceria com a Petrobras para Isolamento Térmico",
-      "tipo": "lead",
-      "descricao": "A Petrobras está buscando parceiros para fornecer serviços de isolamento térmico para suas operações. A Ritfire Isolamentos pode aproveitar essa oportunidade e estabelecer uma parceria com a Petrobras.",
-      "localizacao": "Rio de Janeiro",
-      "valor_estimado": "A consultar",
-      "prazo": "Em negociação",
-      "urgencia": "ALTA",
-      "como_abordar": "Contatar o departamento de compras da Petrobras e apresentar os serviços e materiais da Ritfire Isolamentos, além de destacar a experiência e a qualidade da empresa."
-    },
-    {
-      "titulo": "Isolamento Térmico para Obras do BEC/SP",
+      "titulo": "Isolamento Térmico para Expansão da Planta da JBS em São Paulo",
       "tipo": "obra",
-      "descricao": "O Banco do Estado de São Paulo (BEC/SP) está investindo em obras de construção e reforma de suas unidades. A Ritfire Isolamentos pode oferecer seus serviços e materiais para atender a essa demanda.",
-      "localizacao": "São Paulo",
-      "valor_estimado": "R$ 200 mil",
-      "prazo": "Em andamento, com previsão de conclusão para 2024",
-      "urgencia": "BAIXA",
-      "como_abordar": "Contatar o departamento de compras do BEC/SP para agendar uma reunião e apresentar os serviços e materiais da Ritfire Isolamentos."
+      "descricao": "A JBS está expandindo sua planta em São Paulo e necessita de serviços de isolamento térmico para garantir a eficiência energética e a segurança da instalação. A Ritfire Isolamentos pode oferecer seus serviços e materiais para atender às necessidades dessa obra. O projeto está em fase de planejamento e a escolha do fornecedor deve ser feita nos próximos meses.",
+      "localizacao": "São Paulo, São Paulo",
+      "valor_estimado": "R$ 500.000,00",
+      "prazo": "Fase de planejamento",
+      "urgencia": "MÉDIA",
+      "como_abordar": "Contatar o departamento de manutenção da JBS, via telefone ou e-mail, para agendar uma reunião e apresentar as soluções da Ritfire Isolamentos."
+    },
+    {
+      "titulo": "Fornecimento de Materiais de Isolamento Térmico para Obras da Petrobras",
+      "tipo": "licitacao",
+      "descricao": "A Petrobras está realizando uma licitação para o fornecimento de materiais de isolamento térmico para suas obras. A Ritfire Isolamentos pode se candidatar a essa licitação e oferecer seus produtos e serviços. A licitação está disponível no site da Petrobras.",
+      "localizacao": "Rio de Janeiro, Rio de Janeiro",
+      "valor_estimado": "R$ 2.000.000,00",
+      "prazo": "Licitacao em andamento",
+      "urgencia": "ALTA",
+      "como_abordar": "Acessar o site da Petrobras, verificar os requisitos da licitação e preparar a documentação necessária para se candidatar."
+    },
+    {
+      "titulo": "Isolamento Térmico para Construção de Novo Frigorífico da BRF em Santa Catarina",
+      "tipo": "obra",
+      "descricao": "A BRF está construindo um novo frigorífico em Santa Catarina e necessita de serviços de isolamento térmico para garantir a eficiência energética e a segurança da instalação. A Ritfire Isolamentos pode oferecer seus serviços e materiais para atender às necessidades dessa obra. O projeto está em fase de licitação e a escolha do fornecedor deve ser feita nos próximos meses.",
+      "localizacao": "Santa Catarina",
+      "valor_estimado": "R$ 750.000,00",
+      "prazo": "Fase de licitação",
+      "urgencia": "MÉDIA",
+      "como_abordar": "Contatar o departamento de compras da BRF, via telefone ou e-mail, para agendar uma reunião e apresentar as soluções da Ritfire Isolamentos."
     }
   ],
-  "gerado_em": "05/03/2026 às 02:57"
+  "gerado_em": "05/03/2026 às 03:07",
+  "gh_token": "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"
 }
