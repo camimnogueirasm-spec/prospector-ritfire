@@ -11,6 +11,7 @@ import time
 # ============================================================
 import os
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+print(f"DEBUG - Chave recebida: {GROQ_API_KEY[:8] if GROQ_API_KEY else 'VAZIA'}")
 EMAILJS_SERVICE_ID = "service_o318m79"
 EMAILJS_TEMPLATE_ID = "template_cfgxl3b"
 EMAILJS_PUBLIC_KEY = "xbqV_gmiVw9vchNxR"
