@@ -1,0 +1,281 @@
+{
+  "gerado_em": "09/03/2026 às 11:51",
+  "gh_token": "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",
+  "categorias": {
+    "obra": {
+      "resumo": "Análise do cenário atual de obras de construção civil industrial no Brasil, com foco em expansões de plantas, reformas em indústrias, galpões frigoríficos e instalações petroquímicas.",
+      "oportunidades": [
+        {
+          "titulo": "Expansão da Planta de Produção da Braskem em Mauá",
+          "tipo": "obra",
+          "empresa": "Braskem",
+          "descricao": "A Braskem está expandindo sua planta de produção em Mauá, São Paulo, com investimentos de R$ 1,5 bilhão. A obra inclui a instalação de novos equipamentos e a reforma de áreas existentes, o que requer materiais e serviços de isolamento térmico de alta qualidade. Com a expansão, a planta irá aumentar sua capacidade de produção de polietileno e polipropileno.",
+          "localizacao": "Mauá, São Paulo",
+          "valor_estimado": "R$ 1,5 bilhão",
+          "prazo": "2024-2026",
+          "urgencia": "ALTA",
+          "fonte": "Site da Braskem, LinkedIn",
+          "contato_ideal": "Gerente de Manutenção, Engenharia",
+          "como_abordar": "Entrar em contato com o Gerente de Manutenção da Braskem por meio do LinkedIn, apresentando soluções de isolamento térmico personalizadas para a expansão da planta."
+        },
+        {
+          "titulo": "Reforma do Galpão Frigorífico da JBS em São Paulo",
+          "tipo": "obra",
+          "empresa": "JBS",
+          "descricao": "A JBS está reformando seu galpão frigorífico em São Paulo, com o objetivo de aumentar a eficiência e a capacidade de armazenamento. A obra inclui a instalação de novos sistemas de refrigeração e a reforma de áreas existentes, o que requer materiais e serviços de isolamento térmico especializados.",
+          "localizacao": "São Paulo",
+          "valor_estimado": "R$ 500 milhões",
+          "prazo": "2024-2025",
+          "urgencia": "MÉDIA",
+          "fonte": "Site da JBS, ComprasNet",
+          "contato_ideal": "Gerente de Manutenção, Departamento de Engenharia",
+          "como_abordar": "Enviar proposta de soluções de isolamento térmico para o Departamento de Engenharia da JBS, destacando a experiência em obras similares e a capacidade de atender às necessidades específicas do galpão frigorífico."
+        },
+        {
+          "titulo": "Construção da Nova Planta Petroquímica da Petrobras em Itaboraí",
+          "tipo": "obra",
+          "empresa": "Petrobras",
+          "descricao": "A Petrobras está construindo uma nova planta petroquímica em Itaboraí, Rio de Janeiro, com investimentos de R$ 10 bilhões. A obra inclui a instalação de equipamentos e a construção de infraestrutura, o que requer materiais e serviços de isolamento térmico de alta qualidade e segurança.",
+          "localizacao": "Itaboraí, Rio de Janeiro",
+          "valor_estimado": "R$ 10 bilhão",
+          "prazo": "2025-2030",
+          "urgencia": "ALTA",
+          "fonte": "Site da Petrobras, LinkedIn",
+          "contato_ideal": "Gerente de Projetos, Departamento de Engenharia",
+          "como_abordar": "Participar de licitações públicas para a obra, apresentando propostas de soluções de isolamento térmico que atendam às especificações e necessidades da Petrobras."
+        },
+        {
+          "titulo": "Reforma da Planta de Produção da Vale em São Luís",
+          "tipo": "obra",
+          "empresa": "Vale",
+          "descricao": "A Vale está reformando sua planta de produção em São Luís, Maranhão, com o objetivo de aumentar a eficiência e a capacidade de produção. A obra inclui a instalação de novos equipamentos e a reforma de áreas existentes, o que requer materiais e serviços de isolamento térmico especializados.",
+          "localizacao": "São Luís, Maranhão",
+          "valor_estimado": "R$ 1 bilhão",
+          "prazo": "2024-2026",
+          "urgencia": "MÉDIA",
+          "fonte": "Site da Vale, ComprasNet",
+          "contato_ideal": "Gerente de Manutenção, Departamento de Engenharia",
+          "como_abordar": "Entrar em contato com o Gerente de Manutenção da Vale por meio do LinkedIn, apresentando soluções de isolamento térmico personalizadas para a reforma da planta."
+        },
+        {
+          "titulo": "Construção do Novo Galpão Frigorífico da BRF em Curitiba",
+          "tipo": "obra",
+          "empresa": "BRF",
+          "descricao": "A BRF está construindo um novo galpão frigorífico em Curitiba, Paraná, com o objetivo de aumentar a capacidade de armazenamento e distribuição de produtos. A obra inclui a instalação de novos sistemas de refrigeração e a construção de infraestrutura, o que requer materiais e serviços de isolamento térmico de alta qualidade.",
+          "localizacao": "Curitiba, Paraná",
+          "valor_estimado": "R$ 500 milhões",
+          "prazo": "2024-2025",
+          "urgencia": "MÉDIA",
+          "fonte": "Site da BRF, LinkedIn",
+          "contato_ideal": "Gerente de Manutenção, Departamento de Engenharia",
+          "como_abordar": "Enviar proposta de soluções de isolamento térmico para o Departamento de Engenharia da BRF, destacando a experiência em obras similares e a capacidade de atender às necessidades específicas do galpão frigorífico."
+        },
+        {
+          "titulo": "Expansão da Planta de Produção da Norsk Hydro em Alumínio",
+          "tipo": "obra",
+          "empresa": "Norsk Hydro",
+          "descricao": "A Norsk Hydro está expandindo sua planta de produção em Alumínio, São Paulo, com investimentos de R$ 1,5 bilhão. A obra inclui a instalação de novos equipamentos e a reforma de áreas existentes, o que requer materiais e serviços de isolamento térmico de alta qualidade.",
+          "localizacao": "Alumínio, São Paulo",
+          "valor_estimado": "R$ 1,5 bilhão",
+          "prazo": "2024-2026",
+          "urgencia": "ALTA",
+          "fonte": "Site da Norsk Hydro, LinkedIn",
+          "contato_ideal": "Gerente de Manutenção, Engenharia",
+          "como_abordar": "Participar de licitações públicas para a obra, apresentando propostas de soluções de isolamento térmico que atendam às especificações e necessidades da Norsk Hydro."
+        },
+        {
+          "titulo": "Reforma da Planta de Produção da ArcelorMittal em Tubarão",
+          "tipo": "obra",
+          "empresa": "ArcelorMittal",
+          "descricao": "A ArcelorMittal está reformando sua planta de produção em Tubarão, Espírito Santo, com o objetivo de aumentar a eficiência e a capacidade de produção. A obra inclui a instalação de novos equipamentos e a reforma de áreas existentes, o que requer materiais e serviços de isolamento térmico especializados.",
+          "localizacao": "Tubarão, Espírito Santo",
+          "valor_estimado": "R$ 1 bilhão",
+          "prazo": "2024-2026",
+          "urgencia": "MÉDIA",
+          "fonte": "Site da ArcelorMittal, ComprasNet",
+          "contato_ideal": "Gerente de Manutenção, Departamento de Engenharia",
+          "como_abordar": "Entrar em contato com o Gerente de Manutenção da ArcelorMittal por meio do LinkedIn, apresentando soluções de isolamento térmico personalizadas para a reforma da planta."
+        }
+      ]
+    },
+    "licitacao": {
+      "resumo": "O mercado de isolamento térmico para obras industriais e construção civil está apresentando oportunidades significativas devido ao aumento de projetos de infraestrutura no Brasil.",
+      "oportunidades": [
+        {
+          "titulo": "Licitacao para Isolamento Térmico em Usina de Geração de Energia",
+          "tipo": "licitacao",
+          "empresa": "Energisa",
+          "descricao": "A Energisa está realizando uma licitação para a contratação de serviços de isolamento térmico para sua usina de geração de energia em São Paulo. O projeto visa melhorar a eficiência energética e reduzir custos operacionais. Com o aumento da demanda por energia renovável, a empresa está investindo em melhorias para suas instalações.",
+          "localizacao": "São Paulo, SP",
+          "valor_estimado": "R$ 1,5 milhão",
+          "prazo": "Prazo de entrega: 6 meses, janela de oportunidade até 30/06/2024",
+          "urgencia": "ALTA",
+          "fonte": "ComprasNet",
+          "contato_ideal": "Gerente de Manutenção",
+          "como_abordar": "Entrar em contato via e-mail institucional, destacando a experiência da Ritfire Isolamentos em projetos semelhantes e solicitando uma reunião para discutir a proposta"
+        },
+        {
+          "titulo": "Edital para Serviços de Isolamento em Planta Petroquímica",
+          "tipo": "edital",
+          "empresa": "Petrobras",
+          "descricao": "A Petrobras lançou um edital para a contratação de serviços de isolamento térmico para sua planta petroquímica no Rio de Janeiro. O objetivo é garantir a segurança e eficiência das operações, além de atender às normas ambientais. A demanda por produtos petroquímicos está aumentando, o que torna este projeto estratégico.",
+          "localizacao": "Rio de Janeiro, RJ",
+          "valor_estimado": "R$ 3 milhões",
+          "prazo": "Prazo de entrega: 12 meses, janela de oportunidade até 31/12/2024",
+          "urgencia": "MÉDIA",
+          "fonte": "BEC/SP",
+          "contato_ideal": "Engenheiro de Projeto",
+          "como_abordar": "Participar de evento de apresentação do edital e, posteriormente, enviar proposta detalhada via portal de compras da Petrobras"
+        },
+        {
+          "titulo": "Licitacao para Isolamento Térmico em Construção de Hospital",
+          "tipo": "licitacao",
+          "empresa": "Secretaria de Saúde do Estado de São Paulo",
+          "descricao": "A Secretaria de Saúde do Estado de São Paulo está realizando uma licitação para a contratação de serviços de isolamento térmico para a construção de um novo hospital em São Paulo. O projeto visa garantir o conforto e a segurança dos pacientes e funcionários. Com o aumento da demanda por serviços de saúde, a construção de novas unidades hospitalares é prioritária.",
+          "localizacao": "São Paulo, SP",
+          "valor_estimado": "R$ 800 mil",
+          "prazo": "Prazo de entrega: 9 meses, janela de oportunidade até 15/03/2024",
+          "urgencia": "ALTA",
+          "fonte": "Licitações-e",
+          "contato_ideal": "Gerente de Obras",
+          "como_abordar": "Contatar o gerente de obras via telefone para agendar uma reunião e apresentar a proposta da Ritfire Isolamentos"
+        },
+        {
+          "titulo": "Edital para Fornecimento de Materiais de Isolamento Térmico",
+          "tipo": "edital",
+          "empresa": "Prefeitura Municipal de Curitiba",
+          "descricao": "A Prefeitura Municipal de Curitiba lançou um edital para a aquisição de materiais de isolamento térmico para uso em obras públicas. O objetivo é melhorar a eficiência energética dos prédios públicos e reduzir custos operacionais. A prefeitura está investindo em melhorias para sua infraestrutura.",
+          "localizacao": "Curitiba, PR",
+          "valor_estimado": "R$ 500 mil",
+          "prazo": "Prazo de entrega: 3 meses, janela de oportunidade até 20/04/2024",
+          "urgencia": "MÉDIA",
+          "fonte": "Portal de Compras da Prefeitura de Curitiba",
+          "contato_ideal": "Gerente de Compras",
+          "como_abordar": "Enviar proposta via portal de compras da prefeitura, destacando a qualidade e competitividade dos materiais oferecidos pela Ritfire Isolamentos"
+        },
+        {
+          "titulo": "Licitacao para Isolamento Térmico em Frigorífico",
+          "tipo": "licitacao",
+          "empresa": "JBS S.A.",
+          "descricao": "A JBS S.A. está realizando uma licitação para a contratação de serviços de isolamento térmico para seu frigorífico em Goiás. O projeto visa melhorar a eficiência energética e garantir a qualidade dos produtos. Com o aumento da demanda por proteína animal, a empresa está investindo em melhorias para suas instalações.",
+          "localizacao": "Goiânia, GO",
+          "valor_estimado": "R$ 1 milhão",
+          "prazo": "Prazo de entrega: 6 meses, janela de oportunidade até 10/08/2024",
+          "urgencia": "ALTA",
+          "fonte": "ComprasNet",
+          "contato_ideal": "Gerente de Manutenção",
+          "como_abordar": "Contatar o gerente de manutenção via e-mail, solicitando uma reunião para discutir a proposta e destacar a experiência da Ritfire Isolamentos em projetos semelhantes"
+        },
+        {
+          "titulo": "Edital para Serviços de Isolamento em Usina de Açúcar e Álcool",
+          "tipo": "edital",
+          "empresa": "Raízen",
+          "descricao": "A Raízen lançou um edital para a contratação de serviços de isolamento térmico para sua usina de açúcar e álcool em São Paulo. O objetivo é garantir a eficiência energética e a segurança das operações. Com o aumento da demanda por biocombustíveis, a empresa está investindo em melhorias para suas instalações.",
+          "localizacao": "São Paulo, SP",
+          "valor_estimado": "R$ 2 milhões",
+          "prazo": "Prazo de entrega: 12 meses, janela de oportunidade até 30/09/2024",
+          "urgencia": "MÉDIA",
+          "fonte": "BEC/SP",
+          "contato_ideal": "Engenheiro de Projeto",
+          "como_abordar": "Participar de evento de apresentação do edital e, posteriormente, enviar proposta detalhada via portal de compras da Raízen"
+        },
+        {
+          "titulo": "Licitacao para Isolamento Térmico em Construção de Escola",
+          "tipo": "licitacao",
+          "empresa": "Secretaria de Educação do Estado do Rio de Janeiro",
+          "descricao": "A Secretaria de Educação do Estado do Rio de Janeiro está realizando uma licitação para a contratação de serviços de isolamento térmico para a construção de uma nova escola no Rio de Janeiro. O projeto visa garantir o conforto e a segurança dos estudantes e funcionários. Com o aumento da demanda por educação de qualidade, a construção de novas unidades escolares é prioritária.",
+          "localizacao": "Rio de Janeiro, RJ",
+          "valor_estimado": "R$ 600 mil",
+          "prazo": "Prazo de entrega: 9 meses, janela de oportunidade até 25/05/2024",
+          "urgencia": "ALTA",
+          "fonte": "Licitações-e",
+          "contato_ideal": "Gerente de Obras",
+          "como_abordar": "Contatar o gerente de obras via telefone para agendar uma reunião e apresentar a proposta da Ritfire Isolamentos"
+        }
+      ]
+    },
+    "lead": {
+      "resumo": "A Ritfire Isolamentos pode aproveitar oportunidades em setores como petroquímica, frigoríficos e siderúrgicas, onde a demanda por isolamento térmico é alta.",
+      "oportunidades": [
+        {
+          "titulo": "Isolamento Térmico para a Petrobras",
+          "tipo": "lead",
+          "empresa": "Petrobras",
+          "descricao": "A Petrobras está investindo em modernização de suas plantas petroquímicas, o que inclui a necessidade de isolamento térmico de alta qualidade. A Ritfire Isolamentos pode oferecer seus serviços e materiais para atender a essa demanda. Com a crescente demanda por energia e produtos petroquímicos, a Petrobras busca melhorar a eficiência energética de suas operações.",
+          "localizacao": "Rio de Janeiro",
+          "valor_estimado": "R$ 1,5 milhão",
+          "prazo": "Próximos 6 meses",
+          "urgencia": "ALTA",
+          "fonte": "Site da Petrobras, ComprasNet",
+          "contato_ideal": "Gerente de Manutenção",
+          "como_abordar": "Contatar o Gerente de Manutenção via e-mail ou telefone, destacando a experiência da Ritfire Isolamentos em isolamento térmico para plantas petroquímicas e oferecendo uma reunião para discutir como os produtos e serviços da empresa podem atender às necessidades da Petrobras."
+        },
+        {
+          "titulo": "Serviços de Isolamento para a JBS",
+          "tipo": "lead",
+          "empresa": "JBS",
+          "descricao": "A JBS, uma das maiores empresas de proteína do mundo, está expandindo suas operações no Brasil, o que inclui a construção de novos frigoríficos. A Ritfire Isolamentos pode oferecer seus serviços de isolamento térmico para essas novas instalações, ajudando a garantir a eficiência energética e a qualidade dos produtos.",
+          "localizacao": "São Paulo",
+          "valor_estimado": "R$ 800 mil",
+          "prazo": "Próximos 3 meses",
+          "urgencia": "MÉDIA",
+          "fonte": "Site da JBS, LinkedIn",
+          "contato_ideal": "Engenheiro de Projeto",
+          "como_abordar": "Conectar com o Engenheiro de Projeto no LinkedIn e enviar uma mensagem destacando a expertise da Ritfire Isolamentos em isolamento térmico para frigoríficos e solicitando uma reunião para discutir como a empresa pode apoiar os projetos de expansão da JBS."
+        },
+        {
+          "titulo": "Isolamento Térmico para a Gerdau",
+          "tipo": "lead",
+          "empresa": "Gerdau",
+          "descricao": "A Gerdau, um dos principais produtores de aço do Brasil, está investindo em melhorias em suas siderúrgicas para aumentar a eficiência e reduzir custos. O isolamento térmico é uma área crucial nesse processo, e a Ritfire Isolamentos pode oferecer soluções personalizadas para atender às necessidades específicas da Gerdau.",
+          "localizacao": "Porto Alegre",
+          "valor_estimado": "R$ 1 milhão",
+          "prazo": "Próximos 9 meses",
+          "urgencia": "BAIXA",
+          "fonte": "Site da Gerdau, Relatório Anual",
+          "contato_ideal": "Gerente de Manutenção Industrial",
+          "como_abordar": "Enviar um e-mail ao Gerente de Manutenção Industrial destacando a capacidade da Ritfire Isolamentos de fornecer soluções de isolamento térmico para siderúrgicas e solicitando uma reunião para discutir como a empresa pode contribuir para os objetivos de eficiência da Gerdau."
+        },
+        {
+          "titulo": "Isolamento para a BRF",
+          "tipo": "lead",
+          "empresa": "BRF",
+          "descricao": "A BRF, uma das maiores empresas de alimentos do mundo, está investindo em tecnologia e infraestrutura para melhorar a eficiência de suas operações. Isso inclui a modernização de suas plantas de processamento de alimentos, onde o isolamento térmico desempenha um papel crucial. A Ritfire Isolamentos pode ajudar a BRF a alcançar seus objetivos de eficiência energética.",
+          "localizacao": "Itajaí",
+          "valor_estimado": "R$ 500 mil",
+          "prazo": "Próximos 6 meses",
+          "urgencia": "MÉDIA",
+          "fonte": "Site da BRF, Notícias do Setor",
+          "contato_ideal": "Engenheiro de Manutenção",
+          "como_abordar": "Contatar o Engenheiro de Manutenção via telefone, destacando a experiência da Ritfire Isolamentos em isolamento térmico para plantas de processamento de alimentos e solicitando uma reunião para discutir como a empresa pode apoiar os projetos de modernização da BRF."
+        },
+        {
+          "titulo": "Serviços de Isolamento para a Sanofi",
+          "tipo": "lead",
+          "empresa": "Sanofi",
+          "descricao": "A Sanofi, uma das maiores empresas farmacêuticas do mundo, está investindo em melhorias em suas instalações no Brasil, incluindo a modernização de suas plantas de produção. O isolamento térmico é essencial para manter a qualidade e a estabilidade dos produtos farmacêuticos, e a Ritfire Isolamentos pode oferecer soluções de isolamento térmico personalizadas para atender às necessidades específicas da Sanofi.",
+          "localizacao": "São Paulo",
+          "valor_estimado": "R$ 750 mil",
+          "prazo": "Próximos 9 meses",
+          "urgencia": "BAIXA",
+          "fonte": "Site da Sanofi, Relatório Anual",
+          "contato_ideal": "Gerente de Engenharia",
+          "como_abordar": "Conectar com o Gerente de Engenharia no LinkedIn e enviar uma mensagem destacando a expertise da Ritfire Isolamentos em isolamento térmico para plantas farmacêuticas e solicitando uma reunião para discutir como a empresa pode apoiar os projetos de modernização da Sanofi."
+        },
+        {
+          "titulo": "Isolamento Térmico para o Data Center da Vivo",
+          "tipo": "lead",
+          "empresa": "Vivo",
+          "descricao": "A Vivo, uma das principais operadoras de telecomunicações do Brasil, está investindo em melhorias em seus data centers para atender à crescente demanda por serviços de nuvem e dados. O isolamento térmico é crucial para manter a eficiência energética e a confiabilidade dessas instalações, e a Ritfire Isolamentos pode oferecer soluções de isolamento térmico para data centers.",
+          "localizacao": "São Paulo",
+          "valor_estimado": "R$ 600 mil",
+          "prazo": "Próximos 6 meses",
+          "urgencia": "MÉDIA",
+          "fonte": "Site da Vivo, Notícias de Tecnologia",
+          "contato_ideal": "Gerente de Infraestrutura de TI",
+          "como_abordar": "Contatar o Gerente de Infraestrutura de TI via e-mail, destacando a experiência da Ritfire Isolamentos em isolamento térmico para data centers e solicitando uma reunião para discutir como a empresa pode apoiar os projetos de modernização dos data centers da Vivo."
+        }
+      ]
+    }
+  }
+}
