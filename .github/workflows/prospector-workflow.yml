@@ -1,26 +1,24 @@
 name: AI Prospector Ritfire
 
 on:
-  schedule:
-    - cron: '0 10 * * *'
+  push:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  prospectar:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Instalar dependências
-        run: pip install requests
-
-      - name: Rodar Prospector
+      - name: Injetar API Key no HTML
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: python prospector.py
+        run: sed -i "s|GROQ_KEY_PLACEHOLDER|$GROQ_API_KEY|g" index.html
+
+      - name: Deploy para GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
