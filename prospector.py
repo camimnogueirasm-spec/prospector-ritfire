@@ -9,7 +9,8 @@ import time
 # ============================================================
 # CONFIGURAÇÕES
 # ============================================================
-GROQ_API_KEY = "COLE_SUA_GROQ_API_KEY_AQUI"
+import os
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 EMAILJS_SERVICE_ID = "service_o318m79"
 EMAILJS_TEMPLATE_ID = "template_cfgxl3b"
 EMAILJS_PUBLIC_KEY = "xbqV_gmiVw9vchNxR"
