@@ -19,12 +19,20 @@ export default async function handler(req, res) {
 RITFIRE vende: ${nichoDesc}
 Regiao: ${regiao || 'Brasil'}
 
-Gere 9 oportunidades (3 grandes + 3 medias + 3 pequenas empresas).
+Gere 9 oportunidades reais (3 grandes + 3 medias + 3 pequenas empresas).
 Use "grande","media","pequena" para porte. Use "ALTA","MEDIA","BAIXA" para urgencia.
+
+REGRAS OBRIGATORIAS:
+1. descricao: minimo 3 frases explicando contexto da empresa, necessidade especifica e por que precisam do servico agora
+2. contato_email: email real ou provavel da empresa (ex: compras@empresa.com.br)
+3. contato_telefone: telefone real com DDD sem espacos nem hifen (ex: 1130001234). NUNCA deixar null.
+4. contato_cargo: cargo especifico a contatar (ex: Gerente de Manutencao Industrial)
+5. como_abordar: instrucao detalhada com canal, mensagem-chave e melhor momento
+6. cnpj: CNPJ real de 14 digitos sem formatacao quando souber, senão null
 Sem aspas duplas dentro dos valores de string.
 
 Responda SOMENTE com JSON minificado valido:
-{"resumo":"string","oportunidades":[{"nicho":"${nicho}","porte":"grande","titulo":"string","empresa_alvo":"string","cnpj":null,"setor":"string","descricao":"string","localizacao":"string","valor_estimado":"string","prazo":"string","urgencia":"ALTA","contato_cargo":"string","contato_email":"string","contato_telefone":null,"como_abordar":"string"}]}`;
+{"resumo":"string","oportunidades":[{"nicho":"${nicho}","porte":"grande","titulo":"string","empresa_alvo":"string","cnpj":"00000000000000","setor":"string","descricao":"3 frases de contexto detalhado","localizacao":"Cidade/UF","valor_estimado":"R$ X","prazo":"X meses","urgencia":"ALTA","contato_cargo":"Cargo Especifico","contato_email":"contato@empresa.com.br","contato_telefone":"1130001234","como_abordar":"instrucao detalhada"}]}`;
 
   try {
     const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
