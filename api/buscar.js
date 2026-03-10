@@ -22,17 +22,17 @@ Regiao: ${regiao || 'Brasil'}
 Gere 9 oportunidades reais (3 grandes + 3 medias + 3 pequenas empresas).
 Use "grande","media","pequena" para porte. Use "ALTA","MEDIA","BAIXA" para urgencia.
 
-REGRAS OBRIGATORIAS:
-1. descricao: minimo 3 frases explicando contexto da empresa, necessidade especifica e por que precisam do servico agora
-2. contato_email: email real ou provavel da empresa (ex: compras@empresa.com.br)
-3. contato_telefone: telefone real com DDD sem espacos nem hifen (ex: 1130001234). NUNCA deixar null.
-4. contato_cargo: cargo especifico a contatar (ex: Gerente de Manutencao Industrial)
-5. como_abordar: instrucao detalhada com canal, mensagem-chave e melhor momento
-6. cnpj: CNPJ real de 14 digitos sem formatacao quando souber, senão null
-Sem aspas duplas dentro dos valores de string.
+REGRAS OBRIGATORIAS (mantenha os valores CURTOS para nao truncar o JSON):
+1. descricao: 1 frase resumida com necessidade especifica (max 15 palavras)
+2. como_abordar: 1 frase resumida com canal e mensagem-chave (max 15 palavras)
+3. contato_email: email real ou provavel (ex: compras@empresa.com.br). Nunca null.
+4. contato_telefone: telefone com DDD sem espacos (ex: 1130001234). Nunca null.
+5. contato_cargo: cargo especifico (max 4 palavras)
+6. cnpj: 14 digitos sem formatacao ou null
+Sem aspas duplas dentro dos valores.
 
 Responda SOMENTE com JSON minificado valido:
-{"resumo":"string","oportunidades":[{"nicho":"${nicho}","porte":"grande","titulo":"string","empresa_alvo":"string","cnpj":"00000000000000","setor":"string","descricao":"3 frases de contexto detalhado","localizacao":"Cidade/UF","valor_estimado":"R$ X","prazo":"X meses","urgencia":"ALTA","contato_cargo":"Cargo Especifico","contato_email":"contato@empresa.com.br","contato_telefone":"1130001234","como_abordar":"instrucao detalhada"}]}`;
+{"resumo":"1 frase","oportunidades":[{"nicho":"${nicho}","porte":"grande","titulo":"titulo curto","empresa_alvo":"Nome Empresa","cnpj":null,"setor":"Setor","descricao":"necessidade especifica em 1 frase","localizacao":"Cidade/UF","valor_estimado":"R$ X","prazo":"X meses","urgencia":"ALTA","contato_cargo":"Cargo","contato_email":"email@empresa.com.br","contato_telefone":"1130001234","como_abordar":"canal e mensagem em 1 frase"}]}`;
 
   try {
     const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -43,7 +43,7 @@ Responda SOMENTE com JSON minificado valido:
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
-        max_tokens: 3000,
+        max_tokens: 4000,
         temperature: 0.6,
         messages: [
           { role: 'system', content: 'Responda APENAS com JSON minificado valido. Sem markdown.' },
@@ -67,15 +67,37 @@ Responda SOMENTE com JSON minificado valido:
     try {
       result = JSON.parse(jsonStr);
     } catch(e1) {
-      let fixed = jsonStr.replace(/,\s*\{[^}]*$/s, '');
-      let depth = 0, arrD = 0;
-      for (const ch of fixed) {
-        if (ch==='{') depth++; else if (ch==='}') depth--;
-        else if (ch==='[') arrD++; else if (ch===']') arrD--;
+      try {
+        // Remove ultimo objeto incompleto
+        let fixed = jsonStr.replace(/,\s*\{[^{}]*$/s, '');
+        // Fecha estruturas abertas
+        let depth = 0, arrD = 0;
+        for (const ch of fixed) {
+          if (ch==='{') depth++; else if (ch==='}') depth--;
+          else if (ch==='[') arrD++; else if (ch===']') arrD--;
+        }
+        for (let i=0;i<arrD;i++) fixed+=']';
+        for (let i=0;i<depth;i++) fixed+='}';
+        result = JSON.parse(fixed);
+      } catch(e2) {
+        // Ultima tentativa: extrair apenas oportunidades validas
+        const match = jsonStr.match(/"oportunidades"\s*:\s*\[/);
+        if (match) {
+          const start = jsonStr.indexOf(match[0]);
+          let fixed = '{"resumo":"Mercado em expansao",' + jsonStr.slice(start);
+          fixed = fixed.replace(/,\s*\{[^{}]*$/s, '');
+          let d=0, a=0;
+          for (const ch of fixed) {
+            if(ch==='{')d++; else if(ch==='}')d--;
+            else if(ch==='[')a++; else if(ch===']')a--;
+          }
+          for(let i=0;i<a;i++) fixed+=']';
+          for(let i=0;i<d;i++) fixed+='}';
+          result = JSON.parse(fixed);
+        } else {
+          throw new Error('JSON invalido da IA. Tente novamente.');
+        }
       }
-      for (let i=0;i<arrD;i++) fixed+=']';
-      for (let i=0;i<depth;i++) fixed+='}';
-      result = JSON.parse(fixed);
     }
 
     return res.status(200).json(result);
