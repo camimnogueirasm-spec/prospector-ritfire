@@ -15,10 +15,14 @@ jobs:
       - name: Injetar API Key no HTML
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: sed -i "s|GROQ_KEY_PLACEHOLDER|$GROQ_API_KEY|g" index.html
+        run: |
+          sed -i "s|GROQ_KEY_PLACEHOLDER|${GROQ_API_KEY}|g" index.html
+          echo "Verificando injecao:"
+          grep -c "GROQ_KEY_PLACEHOLDER" index.html || echo "OK - placeholder substituido"
 
       - name: Deploy para GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
+          keep_files: false
