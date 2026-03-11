@@ -7,8 +7,16 @@ export default async function handler(req, res) {
   const { nicho } = req.body || {};
 
   const keywords = nicho === 'incendio'
-    ? ['incendio', 'intumescente', 'corta-fogo', 'protecao passiva', 'extintores']
-    : ['isolamento termico', 'refratario', 'isolamento industrial', 'caldeira isolamento', 'forno industrial'];
+    ? ['revestimento intumescente', 'selante corta fogo', 'porta corta fogo', 'protecao passiva incendio', 'compartimentacao incendio']
+    : ['isolamento termico industrial', 'revestimento refratario', 'isolamento caldeira', 'isolamento forno industrial', 'material refratario industrial'];
+
+  // Palavras que DEVEM aparecer para validar relevância
+  const palavrasRelevantesIncendio = ['incendio','intumescente','corta-fogo','corta fogo','compartimentacao','compartimentação','protecao passiva','proteção passiva','revestimento','selante','spda','hidrante','sprinkler'];
+  const palavrasRelevantesTermico = ['isolamento termico','isolamento térmico','refratario','refratário','caldeira','forno industrial','tubulacao','tubulação','termico','térmico','isolante'];
+  const palavrasRelevantes = nicho === 'incendio' ? palavrasRelevantesIncendio : palavrasRelevantesTermico;
+
+  // Palavras que indicam licitação IRRELEVANTE
+  const palavrasIrrelevantes = ['palco','som','iluminacao','iluminação','banheiro quimico','locacao de estrutura','festa','evento','alimentacao','alimentação','limpeza urbana','coleta de lixo','transporte escolar','merenda','uniforme','combustivel','combustível','veiculo','veículo','medicamento','consultoria','software','informatica','informática'];
 
   const abertas = [];
   const proximas = [];
@@ -60,6 +68,12 @@ export default async function handler(req, res) {
           link: linkEdital,
         };
 
+        // Filtra por relevância — descarta licitações fora do contexto Ritfire
+        const textoLicit = (licit.titulo + ' ' + licit.descricao).toLowerCase();
+        const eRelevante = palavrasRelevantes.some(p => textoLicit.includes(p));
+        const eIrrelevante = palavrasIrrelevantes.some(p => textoLicit.includes(p));
+        if (!eRelevante || eIrrelevante) continue;
+
         // Só aceita licitações com encerramento FUTURO (após hoje)
         if (dataEnc && dataEnc > hoje) {
           // Abre em menos de 7 dias = proxima, senão = aberta em andamento
@@ -94,6 +108,11 @@ export default async function handler(req, res) {
           const id = item.id || item.numero_controle_pncp;
           if (!id || vistos.has(id)) continue;
           vistos.add(id);
+          // Filtro de relevância no fallback
+          const textoFb = ((item.title||'') + ' ' + (item.description||'')).toLowerCase();
+          const eRelFb = palavrasRelevantes.some(p => textoFb.includes(p));
+          const eIrrFb = palavrasIrrelevantes.some(p => textoFb.includes(p));
+          if (!eRelFb || eIrrFb) continue;
           const cnpj = (item.orgao_cnpj || '').replace(/\D/g, '');
           const ano = item.ano || new Date().getFullYear();
           const seq = item.numero_sequencial_compra_ata || '';
