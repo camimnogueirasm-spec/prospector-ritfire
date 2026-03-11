@@ -43,8 +43,8 @@ Responda SOMENTE com JSON minificado valido:
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
-        max_tokens: 4000,
-        temperature: 0.6,
+        max_tokens: 5000,
+        temperature: 0.4,
         messages: [
           { role: 'system', content: 'Responda APENAS com JSON minificado valido. Sem markdown.' },
           { role: 'user', content: prompt }
