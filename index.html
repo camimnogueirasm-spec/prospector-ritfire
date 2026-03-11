@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ritfire — AI Prospector</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+:root{--bg:#0a0a0f;--surface:#111118;--card:#16161f;--border:#2a2a3d;--fire:#ff4d00;--fire2:#ff9500;--blue:#1976d2;--blue2:#42a5f5;--green:#00e676;--yellow:#ffd600;--text:#e8e8f0;--muted:#6b6b8a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,77,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,77,0,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+/* LOGIN */
+.login-overlay{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:40px;width:100%;max-width:380px;text-align:center;}
+.login-logo{width:56px;height:56px;background:linear-gradient(135deg,var(--fire),var(--fire2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 20px;}
+.login-title{font-size:22px;font-weight:800;margin-bottom:4px;}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+.login-field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;text-align:left;}
+.login-field label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.login-field input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:14px;outline:none;width:100%;}
+.login-field input:focus{border-color:var(--fire);}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--fire),var(--fire2));color:white;border:none;border-radius:10px;padding:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
+.login-error{color:#ef9a9a;font-size:13px;margin-top:10px;min-height:18px;}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;}
+.nav-logo .icon{width:32px;height:32px;background:linear-gradient(135deg,var(--fire),var(--fire2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.last-update{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+.btn-update{background:linear-gradient(135deg,var(--fire),var(--fire2));color:white;border:none;border-radius:8px;padding:8px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-update:disabled{opacity:0.4;cursor:not-allowed;}
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:24px 20px 60px;position:relative;z-index:1;}
+/* CONFIG */
+.config-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.config-panel label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.config-panel input{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;outline:none;width:200px;}
+.config-panel input:focus{border-color:var(--fire);}
+/* NICHO TABS */
+.nicho-tabs{display:flex;gap:10px;margin-bottom:24px;}
+.nicho-tab{flex:1;padding:14px 20px;border-radius:12px;border:1px solid var(--border);background:var(--card);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:var(--muted);text-align:center;transition:all 0.2s;}
+.nicho-tab.active-fire{background:rgba(255,77,0,0.12);border-color:var(--fire);color:var(--fire2);}
+.nicho-tab.active-termo{background:rgba(25,118,210,0.12);border-color:var(--blue);color:var(--blue2);}
+/* SECOES */
+.secao{margin-bottom:32px;}
+.secao-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border);}
+.secao-icon{font-size:20px;}
+.secao-title{font-size:15px;font-weight:800;letter-spacing:1px;text-transform:uppercase;}
+.secao-count{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);background:var(--surface);padding:3px 10px;border-radius:20px;margin-left:auto;}
+.secao-loading{font-size:12px;color:var(--fire);font-family:'Space Mono',monospace;display:none;}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:10px;animation:up 0.3s ease forwards;opacity:0;}
+@keyframes up{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.card-licit{border-left:4px solid var(--yellow);}
+.card-obra{border-left:4px solid var(--green);}
+.card-lead-grande{border-left:4px solid var(--fire);}
+.card-lead-media{border-left:4px solid var(--fire2);}
+.card-lead-pequena{border-left:4px solid #ff9999;}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.card-title{font-size:14px;font-weight:700;flex:1;line-height:1.4;}
+.badges{display:flex;gap:5px;flex-wrap:wrap;}
+.badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;text-transform:uppercase;}
+.b-licit{background:rgba(255,214,0,0.12);color:var(--yellow);border:1px solid rgba(255,214,0,0.2);}
+.b-obra{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2);}
+.b-grande{background:rgba(255,77,0,0.1);color:#ffab91;border:1px solid rgba(255,77,0,0.2);}
+.b-media{background:rgba(255,149,0,0.1);color:var(--fire2);border:1px solid rgba(255,149,0,0.2);}
+.b-pequena{background:rgba(76,175,80,0.1);color:#a5d6a7;border:1px solid rgba(76,175,80,0.2);}
+.b-alta{background:rgba(229,57,53,0.15);color:#ef9a9a;border:1px solid rgba(229,57,53,0.2);}
+.b-media-urg{background:rgba(255,149,0,0.12);color:var(--fire2);border:1px solid rgba(255,149,0,0.2);}
+.b-baixa{background:rgba(0,230,118,0.08);color:var(--green);border:1px solid rgba(0,230,118,0.18);}
+.b-pncp{background:rgba(66,165,245,0.12);color:var(--blue2);border:1px solid rgba(66,165,245,0.2);}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.card-sub strong{color:var(--text);}
+.card-desc{font-size:13px;color:#b0b0c8;line-height:1.6;margin-bottom:12px;}
+.card-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;}
+.meta-i{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;}
+.meta-i strong{color:var(--text);}
+/* CONTATOS */
+.contatos{background:#0d0d18;border:1px solid #1e1e35;border-radius:8px;padding:12px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;}
+.contato-item{display:flex;align-items:center;gap:8px;font-size:12px;}
+.contato-label{color:var(--muted);min-width:60px;}
+.contato-val{color:var(--text);font-weight:600;}
+.contato-val a{color:var(--fire2);text-decoration:none;}
+.contato-val a:hover{text-decoration:underline;}
+.wa-link{color:#25d366 !important;font-weight:700;}
+/* ABORDAGEM */
+.abordagem{border-left:3px solid var(--fire);padding:8px 12px;border-radius:0 6px 6px 0;background:rgba(255,77,0,0.04);font-size:12px;color:#c0b090;line-height:1.5;}
+.abordagem-licit{border-left-color:var(--yellow);}
+.abordagem-obra{border-left-color:var(--green);}
+/* LOADING */
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,15,0.93);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.loading-overlay.visible{display:flex;}
+.spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--fire);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:14px;color:var(--muted);}
+.loading-step{font-family:'Space Mono',monospace;font-size:12px;color:var(--fire);}
+.loading-prog{width:300px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.loading-bar{height:100%;background:linear-gradient(90deg,var(--fire),var(--fire2));transition:width 0.4s ease;width:0%;}
+/* EMPTY / ERROR */
+.empty{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
+.error-box{background:rgba(229,57,53,0.08);border:1px solid rgba(229,57,53,0.2);border-radius:10px;padding:14px;color:#ef9a9a;font-size:13px;margin-bottom:18px;display:none;}
+.error-box.visible{display:block;}
+.nicho-content{display:none;}.nicho-content.visible{display:block;}
+/* LICITACAO especial */
+.licit-info{background:rgba(255,214,0,0.04);border:1px solid rgba(255,214,0,0.1);border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;line-height:1.7;}
+.licit-row{display:flex;gap:8px;margin-bottom:4px;}
+.licit-key{color:var(--yellow);font-weight:700;min-width:100px;}
+.licit-val{color:var(--text);}
+.licit-link{display:inline-flex;align-items:center;gap:5px;background:rgba(255,214,0,0.1);border:1px solid rgba(255,214,0,0.2);color:var(--yellow);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;text-decoration:none;margin-top:6px;}
+.licit-link:hover{background:rgba(255,214,0,0.2);}
+</style>
+</head>
+<body>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">&#9889;</div>
+    <div class="login-title">RITFIRE</div>
+    <div class="login-sub">AI Prospector &mdash; Acesso Restrito</div>
+    <div class="login-field">
+      <label>Senha de Acesso</label>
+      <input type="password" id="loginSenha" placeholder="Digite a senha...">
+    </div>
+    <button class="login-btn" id="loginBtn">&#128272; ENTRAR</button>
+    <div class="login-error" id="loginErro"></div>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-logo">
+    <div class="icon">&#9889;</div>
+    <span>RITFIRE</span>
+    <span style="color:var(--muted);font-weight:400;font-size:13px;margin-left:4px;">| AI Prospector</span>
+  </div>
+  <div class="nav-right">
+    <span class="last-update" id="lastUpdate">Nunca atualizado</span>
+    <button class="btn-update" id="btnUpdate">&#8635; ATUALIZAR</button>
+  </div>
+</nav>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Varrendo o mercado...</div>
+  <div class="loading-step" id="loadingStep">Iniciando...</div>
+  <div class="loading-prog"><div class="loading-bar" id="loadingBar"></div></div>
+</div>
+
+<div class="main">
+  <div class="config-panel">
+    <div>
+      <label>Regiao de Busca</label><br>
+      <input type="text" id="regiao" value="Brasil" placeholder="Ex: Sao Paulo, Sul...">
+    </div>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- NICHO TABS -->
+  <div class="nicho-tabs">
+    <button class="nicho-tab active-fire" id="tabFire">&#128293; Protecao contra Incendio</button>
+    <button class="nicho-tab" id="tabTermo">&#127777; Isolamento Termico</button>
+  </div>
+
+  <!-- INCENDIO -->
+  <div class="nicho-content visible" id="contentFire">
+    <div class="secao">
+      <div class="secao-header">
+        <span class="secao-icon">&#128203;</span>
+        <span class="secao-title" style="color:var(--yellow)">Licitacoes Abertas</span>
+        <span class="secao-loading" id="loadLicitAbertaFire">carregando...</span>
+        <span class="secao-count" id="cntLicitAbertaFire">0</span>
+      </div>
+      <div id="licitAbertaFire"><div class="empty">Clique em Atualizar para buscar</div></div>
+    </div>
+    <div class="secao">
+      <div class="secao-header">
+        <span class="secao-icon">&#128337;</span>
+        <span class="secao-title" style="color:#ffcc80">Licitacoes Proximas</span>
+        <span class="secao-loading" id="loadLicitProxFire">carregando...</span>
+        <span class="secao-count" id="cntLicitProxFire">0</span>
+      </div>
+      <div id="licitProxFire"><div class="empty">Clique em Atualizar para buscar</div></div>
+    </div>
+    <div class="secao">
+      <div class="secao-header">
+        <span class="secao-icon">&#127959;</span>
+        <span class="secao-title" style="color:var(--green)">Obras em Andamento</span>
+        <span class="secao-loading" id="loadObrasFire">carregando...</span>
+        <span class="secao-count" id="cntObrasFire">0</span>
+      </div>
+      <div id="obrasFire"><div class="empty">Clique em Atualizar para buscar</div></div>
+    </div>
+    <div class="secao">
+      <div class="secao-header">
+        <span class="secao-icon">&#127970;</span>
+        <span class="secao-title" style="color:var(--fire2)">Leads Gerais</span>
+        <span class="secao-loading" id="loadLeadsFire">carregando...</span>
+        <span class="secao-count" id="cntLeadsFire">0</span>
+      </div>
+      <div id="leadsFire"><div class="empty">Clique em Atualizar para buscar</div></div>
+    </div>
+  </div>
+
+  <!-- TERMICO -->
+  <div class="nicho-content" id="contentTermo">
+    <div class="secao">
+      <div class="secao-header">
+        <span class="secao-icon">&#128203;</span>
+        <span class="secao-title" style="color:var(--yellow)">Licitacoes Abertas</span>
+        <span class="secao-loading" id="loadLicitAbertaTermo">carregando...</span>
+        <span class="secao-count" id="cntLicitAbertaTermo">0</span>
+      </div>
+      <div id="licitAbertaTermo"><div class="empty">Clique em Atualizar para buscar</div></div>
+    </div>
+    <div class="secao">
+      <div class="secao-header">
+        <span class="secao-icon">&#128337;</span>
+        <span class="secao-title" style="color:#ffcc80">Licitacoes Proximas</span>
+        <span class="secao-loading" id="loadLicitProxTermo">carregando...</span>
+        <span class="secao-count" id="cntLicitProxTermo">0</span>
+      </div>
+      <div id="licitProxTermo"><div class="empty">Clique em Atualizar para buscar</div></div>
+    </div>
+    <div class="secao">
+      <div class="secao-header">
+        <span class="secao-icon">&#127959;</span>
+        <span class="secao-title" style="color:var(--green)">Obras em Andamento</span>
+        <span class="secao-loading" id="loadObrasTermo">carregando...</span>
+        <span class="secao-count" id="cntObrasTermo">0</span>
+      </div>
+      <div id="obrasTermo"><div class="empty">Clique em Atualizar para buscar</div></div>
+    </div>
+    <div class="secao">
+      <div class="secao-header">
+        <span class="secao-icon">&#127970;</span>
+        <span class="secao-title" style="color:var(--blue2)">Leads Gerais</span>
+        <span class="secao-loading" id="loadLeadsTermo">carregando...</span>
+        <span class="secao-count" id="cntLeadsTermo">0</span>
+      </div>
+      <div id="leadsTermo"><div class="empty">Clique em Atualizar para buscar</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var SENHA = 'Ritfire2026';
+
+// LOGIN
+document.getElementById('loginBtn').addEventListener('click', fazerLogin);
+document.getElementById('loginSenha').addEventListener('keydown', function(e){ if(e.key==='Enter') fazerLogin(); });
+function fazerLogin(){
+  var s = document.getElementById('loginSenha').value;
+  if(s === SENHA){
+    document.getElementById('loginOverlay').style.display='none';
+    sessionStorage.setItem('rf_auth','1');
+  } else {
+    document.getElementById('loginErro').textContent='Senha incorreta.';
+    document.getElementById('loginSenha').value='';
+  }
+}
+if(sessionStorage.getItem('rf_auth')==='1') document.getElementById('loginOverlay').style.display='none';
+
+// TABS
+document.getElementById('tabFire').addEventListener('click', function(){ switchNicho('fire'); });
+document.getElementById('tabTermo').addEventListener('click', function(){ switchNicho('termo'); });
+function switchNicho(n){
+  document.getElementById('tabFire').className = 'nicho-tab' + (n==='fire'?' active-fire':'');
+  document.getElementById('tabTermo').className = 'nicho-tab' + (n==='termo'?' active-termo':'');
+  document.getElementById('contentFire').className = 'nicho-content' + (n==='fire'?' visible':'');
+  document.getElementById('contentTermo').className = 'nicho-content' + (n==='termo'?' visible':'');
+}
+
+// ATUALIZAR
+document.getElementById('btnUpdate').addEventListener('click', buscarTudo);
+
+function setBar(pct){ document.getElementById('loadingBar').style.width = pct+'%'; }
+function setStep(txt){ document.getElementById('loadingStep').textContent = txt; }
+
+async function buscarTudo(){
+  var btn = document.getElementById('btnUpdate');
+  var regiao = document.getElementById('regiao').value.trim() || 'Brasil';
+  btn.disabled=true; btn.textContent='Aguarde...';
+  document.getElementById('loadingOverlay').classList.add('visible');
+  document.getElementById('errorBox').classList.remove('visible');
+  setBar(0);
+
+  try {
+    // 1. Licitações incêndio
+    setStep('Buscando licitacoes de incendio no PNCP...'); setBar(5);
+    var licitFire = await buscarLicitacoes('incendio');
+    renderLicitacoes(licitFire.abertas||[], 'licitAbertaFire', 'cntLicitAbertaFire', 'fire');
+    renderLicitacoes(licitFire.proximas||[], 'licitProxFire', 'cntLicitProxFire', 'fire');
+    setBar(18);
+
+    // 2. Licitações térmico
+    setStep('Buscando licitacoes de isolamento no PNCP...'); setBar(20);
+    var licitTermo = await buscarLicitacoes('termico');
+    renderLicitacoes(licitTermo.abertas||[], 'licitAbertaTermo', 'cntLicitAbertaTermo', 'termo');
+    renderLicitacoes(licitTermo.proximas||[], 'licitProxTermo', 'cntLicitProxTermo', 'termo');
+    setBar(35);
+
+    // 3. Obras incêndio
+    setStep('Buscando obras de incendio com IA...'); setBar(38);
+    var obrasFire = await chamarBuscar({nicho:'incendio', regiao:regiao, tipo:'obras'});
+    renderLeads(obrasFire.oportunidades||[], 'obrasFire', 'cntObrasFire', 'obra');
+    setBar(50);
+
+    // 4. Obras térmico
+    setStep('Buscando obras termicas com IA...'); setBar(52);
+    var obrasTermo = await chamarBuscar({nicho:'termico', regiao:regiao, tipo:'obras'});
+    renderLeads(obrasTermo.oportunidades||[], 'obrasTermo', 'cntObrasTermo', 'obra');
+    setBar(62);
+
+    // 5. Leads incêndio (3 portes)
+    setStep('Buscando leads de incendio...'); setBar(65);
+    var leadsFireArr = [];
+    for(var p of ['grande','media','pequena']){
+      var r = await chamarBuscar({nicho:'incendio', regiao:regiao, tipo:'leads', porte:p});
+      leadsFireArr = leadsFireArr.concat(r.oportunidades||[]);
+      setBar(65 + (p==='grande'?3:p==='media'?6:9));
+    }
+    renderLeads(leadsFireArr, 'leadsFire', 'cntLeadsFire', 'lead');
+    setBar(76);
+
+    // 6. Leads térmico (3 portes)
+    setStep('Buscando leads de isolamento termico...'); setBar(78);
+    var leadsTermoArr = [];
+    for(var p2 of ['grande','media','pequena']){
+      var r2 = await chamarBuscar({nicho:'termico', regiao:regiao, tipo:'leads', porte:p2});
+      leadsTermoArr = leadsTermoArr.concat(r2.oportunidades||[]);
+      setBar(78 + (p2==='grande'?4:p2==='media'?8:12));
+    }
+    renderLeads(leadsTermoArr, 'leadsTermo', 'cntLeadsTermo', 'lead');
+    setBar(100);
+
+    document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date().toLocaleString('pt-BR');
+
+  } catch(err){
+    document.getElementById('errorBox').textContent = 'Erro: ' + err.message;
+    document.getElementById('errorBox').classList.add('visible');
+  } finally {
+    document.getElementById('loadingOverlay').classList.remove('visible');
+    btn.disabled=false; btn.textContent='Atualizar';
+  }
+}
+
+async function buscarLicitacoes(nicho){
+  var r = await fetch('/api/licitacoes', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({nicho:nicho})
+  });
+  if(!r.ok) return {abertas:[], proximas:[]};
+  return r.json();
+}
+
+async function chamarBuscar(body){
+  var r = await fetch('/api/buscar', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  if(!r.ok){ var e=await r.json(); throw new Error(e.error||'Erro API'); }
+  return r.json();
+}
+
+function formatVal(v){
+  if(!v) return '';
+  var n = parseFloat(String(v).replace(/[^\d.]/g,''));
+  if(isNaN(n)) return String(v);
+  return 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function renderLicitacoes(items, containerId, countId, nicho){
+  var c = document.getElementById(containerId);
+  var cnt = document.getElementById(countId);
+  cnt.textContent = items.length;
+  if(!items.length){ c.innerHTML='<div class="empty">Nenhuma licitacao encontrada no PNCP para este nicho.</div>'; return; }
+  var html='';
+  items.forEach(function(it, i){
+    var local = [it.municipio, it.uf].filter(Boolean).join('/');
+    html += '<div class="card card-licit" style="animation-delay:'+(i*0.06)+'s">';
+    html += '<div class="card-top"><div class="card-title">'+it.titulo+'</div>';
+    html += '<div class="badges"><span class="badge b-licit">LICITACAO</span><span class="badge b-pncp">PNCP</span></div></div>';
+    html += '<div class="card-sub"><strong>'+it.orgao+'</strong>';
+    if(local) html += ' &middot; '+local;
+    if(it.modalidade) html += ' &middot; '+it.modalidade;
+    html += '</div>';
+    if(it.descricao && it.descricao !== it.titulo) html += '<p class="card-desc">'+it.descricao+'</p>';
+    html += '<div class="licit-info">';
+    if(it.numero) html += '<div class="licit-row"><span class="licit-key">N° Controle:</span><span class="licit-val">'+it.numero+'</span></div>';
+    if(it.modalidade) html += '<div class="licit-row"><span class="licit-key">Modalidade:</span><span class="licit-val">'+it.modalidade+'</span></div>';
+    if(it.situacao) html += '<div class="licit-row"><span class="licit-key">Situacao:</span><span class="licit-val">'+it.situacao+'</span></div>';
+    if(it.valor) html += '<div class="licit-row"><span class="licit-key">Valor Est.:</span><span class="licit-val">'+formatVal(it.valor)+'</span></div>';
+    if(it.dataPublicacao) html += '<div class="licit-row"><span class="licit-key">Publicacao:</span><span class="licit-val">'+formatData(it.dataPublicacao)+'</span></div>';
+    if(it.dataEncerramento) html += '<div class="licit-row"><span class="licit-key">Encerramento:</span><span class="licit-val">'+formatData(it.dataEncerramento)+'</span></div>';
+    if(it.cnpjOrgao) html += '<div class="licit-row"><span class="licit-key">CNPJ Orgao:</span><span class="licit-val">'+it.cnpjOrgao+'</span></div>';
+    if(it.link) html += '<a href="'+it.link+'" target="_blank" class="licit-link">&#128279; Acessar Edital no PNCP</a>';
+    html += '</div>';
+    if(it.cnpjOrgao){
+      html += '<div class="contatos">';
+      html += '<div class="contato-item"><span class="contato-label">CNPJ:</span><span class="contato-val">'+it.cnpjOrgao+'</span></div>';
+      html += '<div class="contato-item"><span class="contato-label">Site:</span><span class="contato-val"><a href="https://pncp.gov.br" target="_blank">pncp.gov.br</a></span></div>';
+      html += '</div>';
+    }
+    html += '<div class="abordagem abordagem-licit">&#128161; Verifique os requisitos do edital, prepare documentacao de habilitacao e submeta proposta tecnica antes do prazo de encerramento.</div>';
+    html += '</div>';
+  });
+  c.innerHTML = html;
+}
+
+function renderLeads(items, containerId, countId, tipo){
+  var c = document.getElementById(containerId);
+  var cnt = document.getElementById(countId);
+  cnt.textContent = items.length;
+  if(!items.length){ c.innerHTML='<div class="empty">Nenhum resultado encontrado.</div>'; return; }
+  var html='';
+  items.forEach(function(op, i){
+    var porte = (op.porte||'').toLowerCase();
+    var urgencia = (op.urgencia||'MEDIA').toUpperCase().replace('É','E').replace('Ã','A');
+    var urgKey = urgencia==='ALTA'?'alta':urgencia==='MEDIA'||urgencia==='MÉDIA'?'media-urg':'baixa';
+    var cardClass = tipo==='obra'?'card-obra':porte==='grande'?'card-lead-grande':porte==='media'?'card-lead-media':'card-lead-pequena';
+    var badgePorte = porte==='grande'?'b-grande':porte==='media'?'b-media':'b-pequena';
+    var porteLabel = porte==='grande'?'Grande':porte==='media'?'Media':'Pequena';
+
+    html += '<div class="card '+cardClass+'" style="animation-delay:'+(i*0.05)+'s">';
+    html += '<div class="card-top"><div class="card-title">'+(op.titulo||op.empresa_alvo)+'</div>';
+    html += '<div class="badges">';
+    if(tipo==='obra') html += '<span class="badge b-obra">OBRA</span>';
+    else html += '<span class="badge '+badgePorte+'">'+porteLabel+'</span>';
+    html += '<span class="badge b-'+urgKey+'">'+urgencia+'</span></div></div>';
+
+    html += '<div class="card-sub"><strong>'+(op.empresa_alvo||'')+'</strong>';
+    if(op.setor) html += ' &middot; '+op.setor;
+    if(op.localizacao) html += ' &middot; &#128205; '+op.localizacao;
+    html += '</div>';
+    if(op.descricao) html += '<p class="card-desc">'+op.descricao+'</p>';
+    html += '<div class="card-meta">';
+    if(op.valor_estimado) html += '<div class="meta-i">&#128176; <strong>'+op.valor_estimado+'</strong></div>';
+    if(op.prazo) html += '<div class="meta-i">&#128197; <strong>'+op.prazo+'</strong></div>';
+    html += '</div>';
+
+    // Contatos
+    html += '<div class="contatos">';
+    if(op.contato_cargo) html += '<div class="contato-item"><span class="contato-label">&#128100; Cargo:</span><span class="contato-val">'+op.contato_cargo+'</span></div>';
+    if(op.contato_email) html += '<div class="contato-item"><span class="contato-label">&#128231; E-mail:</span><span class="contato-val"><a href="mailto:'+op.contato_email+'">'+op.contato_email+'</a></span></div>';
+    if(op.contato_telefone){
+      var tl = String(op.contato_telefone).replace(/\D/g,'');
+      html += '<div class="contato-item"><span class="contato-label">&#128222; Fone:</span><span class="contato-val">'+op.contato_telefone+'</span></div>';
+      if(tl.length>=10) html += '<div class="contato-item"><span class="contato-label">&#128172; WhatsApp:</span><span class="contato-val"><a href="https://wa.me/55'+tl+'" target="_blank" class="wa-link">Abrir conversa &#8594;</a></span></div>';
+    }
+    if(op.site) html += '<div class="contato-item"><span class="contato-label">&#127760; Site:</span><span class="contato-val"><a href="http://'+op.site.replace(/^https?:\/\//,'')+'" target="_blank">'+op.site+'</a></span></div>';
+    html += '</div>';
+
+    if(op.como_abordar) html += '<div class="abordagem '+(tipo==='obra'?'abordagem-obra':'')+'">&#128161; '+op.como_abordar+'</div>';
+    html += '</div>';
+  });
+  c.innerHTML = html;
+}
+
+function formatData(d){
+  if(!d) return '';
+  try{ return new Date(d).toLocaleDateString('pt-BR'); } catch(e){ return d; }
+}
+</script>
+</body>
+</html>
