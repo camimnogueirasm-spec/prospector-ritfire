@@ -63,7 +63,8 @@ Retorne JSON com exatamente 3 itens:
         parsed = JSON.parse(fixed);
       } catch(e2) {
         console.error('Parse falhou:', e2.message);
-        return res.status(500).json({ error: 'Parse error: '+e2.message });
+        // Retorna vazio em vez de erro para não quebrar o frontend
+        return res.status(200).json({ oportunidades: [] });
       }
     }
 
