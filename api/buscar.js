@@ -10,34 +10,41 @@ export default async function handler(req, res) {
   if (!GROQ_API_KEY) return res.status(500).json({ error: 'Chave nao configurada.' });
 
   const nichoDesc = nicho === 'incendio'
-    ? 'PROTECAO PASSIVA CONTRA INCENDIO: revestimentos intumescentes, selantes corta-fogo, barreiras, portas corta-fogo, compartimentacao.'
-    : 'ISOLAMENTO TERMICO INDUSTRIAL: isolamento para caldeiras, tubulacoes, fornos e equipamentos industriais de alta temperatura.';
+    ? 'PROTECAO PASSIVA CONTRA INCENDIO: revestimentos intumescentes, selantes corta-fogo, portas corta-fogo, compartimentacao.'
+    : 'ISOLAMENTO TERMICO INDUSTRIAL: isolamento para caldeiras, tubulacoes, fornos e equipamentos de alta temperatura.';
+
+  const setoresList = [
+    'Siderurgia','Petroleo e Gas','Alimentos e Bebidas','Papel e Celulose',
+    'Mineracao','Hospitais','Construcao Civil','Naval','Automotivo',
+    'Ceramica','Vidro','Cimento','Termeletrica','Quimica','Farmaceutica',
+    'Aluminio','Refinaria','Offshore','Metalurgia','Fundição'
+  ];
 
   const portes = [
-    { porte: 'grande', desc: '3 grandes empresas com mais de 500 funcionarios, marcas conhecidas nacionalmente' },
-    { porte: 'media',  desc: '3 medias empresas com 50 a 500 funcionarios' },
-    { porte: 'pequena',desc: '3 pequenas empresas com ate 50 funcionarios, prestadoras de servico ou construtoras regionais' }
+    { porte: 'grande',  desc: 'grande empresa com mais de 500 funcionarios' },
+    { porte: 'media',   desc: 'media empresa com 50 a 500 funcionarios' },
+    { porte: 'pequena', desc: 'pequena empresa ou prestadora de servico regional' }
   ];
 
   const todasOportunidades = [];
   let resumo = '';
+  const seed = Math.floor(Math.random() * 999999);
+  const hora = new Date().toISOString();
 
   for (const p of portes) {
-    const agora = new Date().toISOString();
-    const seed = Math.floor(Math.random() * 99999);
-    const prompt = `Especialista B2B industria brasileira. RITFIRE vende: ${nichoDesc}. Regiao: ${regiao || 'Brasil'}.
-Timestamp: ${agora} | Seed: ${seed}
+    // Escolhe 2 setores aleatórios para forçar variedade
+    const s1 = setoresList[Math.floor(Math.random() * setoresList.length)];
+    const s2 = setoresList[Math.floor(Math.random() * setoresList.length)];
 
-Gere EXATAMENTE 3 oportunidades DIFERENTES e NOVAS do tipo: ${p.desc}.
-IMPORTANTE: Use empresas e setores VARIADOS a cada chamada. Nunca repita as mesmas empresas. Explore setores diferentes como: siderurgia, petroleo, alimentos, papel e celulose, mineracao, hospitais, construcao civil, naval, automotivo, ceramica, vidro, cimento, termeletrica, quimica, farmaceutica.
-Porte fixo: "${p.porte}". Nicho fixo: "${nicho}".
-Urgencia: "ALTA", "MEDIA" ou "BAIXA".
-Valores de string: curtos, sem aspas duplas internas.
-contato_telefone: DDD+numero sem espacos (ex: 1130001234). Nunca null.
-contato_email: email provavel. Nunca null.
+    const prompt = `B2B Brasil. RITFIRE vende: ${nichoDesc} Regiao: ${regiao||'Brasil'}. Seed:${seed} Hora:${hora}
 
-JSON APENAS, sem markdown:
-{"resumo":"frase curta","oportunidades":[{"nicho":"${nicho}","porte":"${p.porte}","titulo":"titulo","empresa_alvo":"empresa","cnpj":null,"setor":"setor","descricao":"necessidade em 1 frase","localizacao":"Cidade/UF","valor_estimado":"R$ X","prazo":"X meses","urgencia":"ALTA","contato_cargo":"Cargo","contato_email":"email@empresa.com.br","contato_telefone":"1130001234","como_abordar":"acao em 1 frase"}]}`;
+Gere 3 leads de prospecção para empresas do tipo: ${p.desc}.
+Foque nos setores: ${s1}, ${s2} e outros variados.
+Nicho:"${nicho}" Porte:"${p.porte}" Urgencia:"ALTA" ou "MEDIA" ou "BAIXA"
+Textos CURTOS. Sem aspas duplas nos valores. Telefone nunca null.
+
+Responda so com este JSON, 3 itens no array:
+{"r":"resumo","o":[{"n":"${nicho}","p":"${p.porte}","ti":"titulo","e":"empresa","c":null,"s":"setor","d":"descricao curta","l":"Cidade/UF","v":"R$ valor","pr":"prazo","u":"ALTA","cc":"cargo","ce":"email@emp.com.br","ct":"11999999999","a":"como abordar"}]}`;
 
     try {
       const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -45,33 +52,37 @@ JSON APENAS, sem markdown:
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
         body: JSON.stringify({
           model: 'llama-3.3-70b-versatile',
-          max_tokens: 2000,
-          temperature: 0.4,
+          max_tokens: 1500,
+          temperature: 0.5,
           messages: [
-            { role: 'system', content: 'Responda APENAS com JSON minificado valido. Sem texto fora do JSON.' },
+            { role: 'system', content: 'Responda APENAS com JSON minificado. Sem markdown. Sem texto fora do JSON.' },
             { role: 'user', content: prompt }
           ]
         })
       });
 
-      if (!groqRes.ok) {
-        const err = await groqRes.json();
-        console.error('Groq error:', err);
-        continue;
-      }
+      if (!groqRes.ok) continue;
 
       const data = await groqRes.json();
-      let text = data.choices[0].message.content.replace(/```json|```/g, '').trim();
+      let text = data.choices[0].message.content;
+
+      // Limpar resposta
+      text = text.replace(/```json|```/gi, '').trim();
       const start = text.indexOf('{');
-      if (start === -1) continue;
-      let jsonStr = text.slice(start);
+      const end = text.lastIndexOf('}');
+      if (start === -1 || end === -1) continue;
+      let jsonStr = text.slice(start, end + 1);
 
       let parsed;
       try {
         parsed = JSON.parse(jsonStr);
-      } catch(e1) {
+      } catch(e) {
+        // Tenta reparar JSON truncado
         try {
-          let fixed = jsonStr.replace(/,\s*\{[^{}]*$/s, '');
+          let fixed = jsonStr;
+          // Remove ultimo item incompleto
+          fixed = fixed.replace(/,\s*\{[^}]*$/s, '');
+          // Fecha estruturas
           let d = 0, a = 0;
           for (const ch of fixed) {
             if (ch==='{') d++; else if (ch==='}') d--;
@@ -81,16 +92,37 @@ JSON APENAS, sem markdown:
           for (let i=0;i<d;i++) fixed+='}';
           parsed = JSON.parse(fixed);
         } catch(e2) {
-          console.error('Parse error:', e2.message);
+          console.error('Parse falhou para porte', p.porte, e2.message);
           continue;
         }
       }
 
-      if (!resumo && parsed.resumo) resumo = parsed.resumo;
-      if (parsed.oportunidades) todasOportunidades.push(...parsed.oportunidades);
+      if (!resumo && parsed.r) resumo = parsed.r;
+
+      // Mapear chaves curtas para chaves completas
+      const ops = parsed.o || parsed.oportunidades || [];
+      for (const op of ops) {
+        todasOportunidades.push({
+          nicho:             op.n  || op.nicho            || nicho,
+          porte:             op.p  || op.porte             || p.porte,
+          titulo:            op.ti || op.titulo            || '',
+          empresa_alvo:      op.e  || op.empresa_alvo      || '',
+          cnpj:              op.c  || op.cnpj              || null,
+          setor:             op.s  || op.setor             || '',
+          descricao:         op.d  || op.descricao         || '',
+          localizacao:       op.l  || op.localizacao       || '',
+          valor_estimado:    op.v  || op.valor_estimado    || '',
+          prazo:             op.pr || op.prazo             || '',
+          urgencia:          op.u  || op.urgencia          || 'MEDIA',
+          contato_cargo:     op.cc || op.contato_cargo     || '',
+          contato_email:     op.ce || op.contato_email     || '',
+          contato_telefone:  op.ct || op.contato_telefone  || '',
+          como_abordar:      op.a  || op.como_abordar      || '',
+        });
+      }
 
     } catch(err) {
-      console.error('Fetch error:', err.message);
+      console.error('Erro porte', p.porte, err.message);
       continue;
     }
   }
@@ -99,5 +131,5 @@ JSON APENAS, sem markdown:
     return res.status(500).json({ error: 'Nao foi possivel gerar oportunidades. Tente novamente.' });
   }
 
-  return res.status(200).json({ resumo, oportunidades: todasOportunidades });
+  return res.status(200).json({ resumo: resumo || 'Mercado em expansao', oportunidades: todasOportunidades });
 }
