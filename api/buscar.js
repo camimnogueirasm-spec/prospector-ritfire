@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -8,100 +7,97 @@ export default async function handler(req, res) {
 
   const { nicho, regiao } = req.body;
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-  if (!GROQ_API_KEY) return res.status(500).json({ error: 'Chave não configurada no servidor.' });
+  if (!GROQ_API_KEY) return res.status(500).json({ error: 'Chave nao configurada.' });
 
   const nichoDesc = nicho === 'incendio'
     ? 'PROTECAO PASSIVA CONTRA INCENDIO: revestimentos intumescentes, selantes corta-fogo, barreiras, portas corta-fogo, compartimentacao.'
-    : 'ISOLAMENTO TERMICO INDUSTRIAL: materiais e servicos de isolamento para processos industriais de alta temperatura, caldeiras, tubulacoes, fornos.';
+    : 'ISOLAMENTO TERMICO INDUSTRIAL: isolamento para caldeiras, tubulacoes, fornos e equipamentos industriais de alta temperatura.';
 
-  const prompt = `Voce e especialista em prospeccao B2B para industrias brasileiras.
-RITFIRE vende: ${nichoDesc}
-Regiao: ${regiao || 'Brasil'}
+  const portes = [
+    { porte: 'grande', desc: '3 grandes empresas com mais de 500 funcionarios, marcas conhecidas nacionalmente' },
+    { porte: 'media',  desc: '3 medias empresas com 50 a 500 funcionarios' },
+    { porte: 'pequena',desc: '3 pequenas empresas com ate 50 funcionarios, prestadoras de servico ou construtoras regionais' }
+  ];
 
-Gere 9 oportunidades reais (3 grandes + 3 medias + 3 pequenas empresas).
-Use "grande","media","pequena" para porte. Use "ALTA","MEDIA","BAIXA" para urgencia.
+  const todasOportunidades = [];
+  let resumo = '';
 
-REGRAS OBRIGATORIAS (mantenha os valores CURTOS para nao truncar o JSON):
-1. descricao: 1 frase resumida com necessidade especifica (max 15 palavras)
-2. como_abordar: 1 frase resumida com canal e mensagem-chave (max 15 palavras)
-3. contato_email: email real ou provavel (ex: compras@empresa.com.br). Nunca null.
-4. contato_telefone: telefone com DDD sem espacos (ex: 1130001234). Nunca null.
-5. contato_cargo: cargo especifico (max 4 palavras)
-6. cnpj: 14 digitos sem formatacao ou null
-Sem aspas duplas dentro dos valores.
+  for (const p of portes) {
+    const agora = new Date().toISOString();
+    const seed = Math.floor(Math.random() * 99999);
+    const prompt = `Especialista B2B industria brasileira. RITFIRE vende: ${nichoDesc}. Regiao: ${regiao || 'Brasil'}.
+Timestamp: ${agora} | Seed: ${seed}
 
-Responda SOMENTE com JSON minificado valido:
-{"resumo":"1 frase","oportunidades":[{"nicho":"${nicho}","porte":"grande","titulo":"titulo curto","empresa_alvo":"Nome Empresa","cnpj":null,"setor":"Setor","descricao":"necessidade especifica em 1 frase","localizacao":"Cidade/UF","valor_estimado":"R$ X","prazo":"X meses","urgencia":"ALTA","contato_cargo":"Cargo","contato_email":"email@empresa.com.br","contato_telefone":"1130001234","como_abordar":"canal e mensagem em 1 frase"}]}`;
+Gere EXATAMENTE 3 oportunidades DIFERENTES e NOVAS do tipo: ${p.desc}.
+IMPORTANTE: Use empresas e setores VARIADOS a cada chamada. Nunca repita as mesmas empresas. Explore setores diferentes como: siderurgia, petroleo, alimentos, papel e celulose, mineracao, hospitais, construcao civil, naval, automotivo, ceramica, vidro, cimento, termeletrica, quimica, farmaceutica.
+Porte fixo: "${p.porte}". Nicho fixo: "${nicho}".
+Urgencia: "ALTA", "MEDIA" ou "BAIXA".
+Valores de string: curtos, sem aspas duplas internas.
+contato_telefone: DDD+numero sem espacos (ex: 1130001234). Nunca null.
+contato_email: email provavel. Nunca null.
 
-  try {
-    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        max_tokens: 5000,
-        temperature: 0.4,
-        messages: [
-          { role: 'system', content: 'Responda APENAS com JSON minificado valido. Sem markdown.' },
-          { role: 'user', content: prompt }
-        ]
-      })
-    });
+JSON APENAS, sem markdown:
+{"resumo":"frase curta","oportunidades":[{"nicho":"${nicho}","porte":"${p.porte}","titulo":"titulo","empresa_alvo":"empresa","cnpj":null,"setor":"setor","descricao":"necessidade em 1 frase","localizacao":"Cidade/UF","valor_estimado":"R$ X","prazo":"X meses","urgencia":"ALTA","contato_cargo":"Cargo","contato_email":"email@empresa.com.br","contato_telefone":"1130001234","como_abordar":"acao em 1 frase"}]}`;
 
-    if (!groqRes.ok) {
-      const err = await groqRes.json();
-      return res.status(500).json({ error: err.error?.message || 'Erro no Groq' });
-    }
-
-    const data = await groqRes.json();
-    let text = data.choices[0].message.content.replace(/```json|```/g, '').trim();
-    const start = text.indexOf('{');
-    let jsonStr = text.slice(start);
-
-    // Parser robusto
-    let result;
     try {
-      result = JSON.parse(jsonStr);
-    } catch(e1) {
+      const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          max_tokens: 2000,
+          temperature: 0.4,
+          messages: [
+            { role: 'system', content: 'Responda APENAS com JSON minificado valido. Sem texto fora do JSON.' },
+            { role: 'user', content: prompt }
+          ]
+        })
+      });
+
+      if (!groqRes.ok) {
+        const err = await groqRes.json();
+        console.error('Groq error:', err);
+        continue;
+      }
+
+      const data = await groqRes.json();
+      let text = data.choices[0].message.content.replace(/```json|```/g, '').trim();
+      const start = text.indexOf('{');
+      if (start === -1) continue;
+      let jsonStr = text.slice(start);
+
+      let parsed;
       try {
-        // Remove ultimo objeto incompleto
-        let fixed = jsonStr.replace(/,\s*\{[^{}]*$/s, '');
-        // Fecha estruturas abertas
-        let depth = 0, arrD = 0;
-        for (const ch of fixed) {
-          if (ch==='{') depth++; else if (ch==='}') depth--;
-          else if (ch==='[') arrD++; else if (ch===']') arrD--;
-        }
-        for (let i=0;i<arrD;i++) fixed+=']';
-        for (let i=0;i<depth;i++) fixed+='}';
-        result = JSON.parse(fixed);
-      } catch(e2) {
-        // Ultima tentativa: extrair apenas oportunidades validas
-        const match = jsonStr.match(/"oportunidades"\s*:\s*\[/);
-        if (match) {
-          const start = jsonStr.indexOf(match[0]);
-          let fixed = '{"resumo":"Mercado em expansao",' + jsonStr.slice(start);
-          fixed = fixed.replace(/,\s*\{[^{}]*$/s, '');
-          let d=0, a=0;
+        parsed = JSON.parse(jsonStr);
+      } catch(e1) {
+        try {
+          let fixed = jsonStr.replace(/,\s*\{[^{}]*$/s, '');
+          let d = 0, a = 0;
           for (const ch of fixed) {
-            if(ch==='{')d++; else if(ch==='}')d--;
-            else if(ch==='[')a++; else if(ch===']')a--;
+            if (ch==='{') d++; else if (ch==='}') d--;
+            else if (ch==='[') a++; else if (ch===']') a--;
           }
-          for(let i=0;i<a;i++) fixed+=']';
-          for(let i=0;i<d;i++) fixed+='}';
-          result = JSON.parse(fixed);
-        } else {
-          throw new Error('JSON invalido da IA. Tente novamente.');
+          for (let i=0;i<a;i++) fixed+=']';
+          for (let i=0;i<d;i++) fixed+='}';
+          parsed = JSON.parse(fixed);
+        } catch(e2) {
+          console.error('Parse error:', e2.message);
+          continue;
         }
       }
-    }
 
-    return res.status(200).json(result);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
+      if (!resumo && parsed.resumo) resumo = parsed.resumo;
+      if (parsed.oportunidades) todasOportunidades.push(...parsed.oportunidades);
+
+    } catch(err) {
+      console.error('Fetch error:', err.message);
+      continue;
+    }
   }
+
+  if (todasOportunidades.length === 0) {
+    return res.status(500).json({ error: 'Nao foi possivel gerar oportunidades. Tente novamente.' });
+  }
+
+  return res.status(200).json({ resumo, oportunidades: todasOportunidades });
 }
