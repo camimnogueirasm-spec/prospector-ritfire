@@ -55,6 +55,13 @@ export default async function handler(req, res) {
         const dataEncStr = item.data_fim_vigencia || '';
         const dataEnc = dataEncStr ? new Date(dataEncStr) : null;
 
+        // Filtra: só aceita encerramento com pelo menos 30 dias no futuro
+        const limite30dias = new Date(hoje.getTime() + 30 * 24 * 60 * 60 * 1000);
+        if (dataEnc && dataEnc < limite30dias) continue;
+        // Ignora situações suspensas ou canceladas
+        const situacao = (item.situacao_nome || '').toLowerCase();
+        if (situacao.includes('suspens') || situacao.includes('cancel') || situacao.includes('revog')) continue;
+
         const licit = {
           titulo: item.title || 'Licitacao',
           descricao: item.description || '',
