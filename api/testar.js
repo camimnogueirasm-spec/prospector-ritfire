@@ -1,40 +1,29 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const API_KEY = process.env.HUGGINGFACE_API_KEY;
-  if (!API_KEY) return res.status(200).json({ status: 'ERRO', problema: 'HUGGINGFACE_API_KEY nao configurada' });
+  const API_KEY = process.env.GROQ_API_KEY;
+  if (!API_KEY) return res.status(200).json({ status: 'ERRO', problema: 'GROQ_API_KEY nao configurada' });
 
-  // Tenta 3 modelos diferentes
-  const modelos = [
-    'https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta',
-    'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2',
-    'https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct'
-  ];
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 10,
+        messages: [{ role: 'user', content: 'Responda apenas: OK' }]
+      })
+    });
 
-  for (const url of modelos) {
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          inputs: 'Responda apenas: OK',
-          parameters: { max_new_tokens: 10 }
-        })
-      });
+    const data = await response.json();
+    if (!response.ok) return res.status(200).json({ status: 'ERRO_GROQ', detalhe: data.error?.message, code: response.status });
 
-      const text = await response.text();
-      console.log('Model:', url, 'Status:', response.status, 'Response:', text.slice(0, 100));
-
-      if (response.ok) {
-        return res.status(200).json({ status: 'OK', modelo: url, resposta: text.slice(0, 50) });
-      }
-    } catch(e) {
-      console.error('Erro modelo:', url, e.message);
-    }
+    const texto = data.choices?.[0]?.message?.content || '';
+    return res.status(200).json({ status: 'OK', resposta: texto, chave_configurada: true });
+  } catch (err) {
+    return res.status(200).json({ status: 'ERRO_CONEXAO', detalhe: err.message });
   }
-
-  return res.status(200).json({ status: 'ERRO', problema: 'Nenhum modelo disponivel' });
 }

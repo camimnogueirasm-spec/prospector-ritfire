@@ -1,25 +1,28 @@
-async function chamarIA(prompt, apiKey) {
-  const input = `<s>[INST] ${prompt} [/INST]`;
-
-  const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3', {
+async function chamarGroq(prompt, apiKey) {
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
     },
     body: JSON.stringify({
-      inputs: input,
-      parameters: { max_new_tokens: 1200, temperature: 0.5, return_full_text: false }
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: 1000,
+      temperature: 0.5,
+      messages: [
+        { role: 'system', content: 'Retorne APENAS arrays JSON validos. Sem texto. Sem markdown.' },
+        { role: 'user', content: prompt }
+      ]
     })
   });
 
   if (!response.ok) {
     const err = await response.json();
-    throw new Error('HF error: ' + (err.error || response.status));
+    throw new Error('Groq error: ' + (err.error?.message || response.status));
   }
 
   const data = await response.json();
-  return Array.isArray(data) ? data[0]?.generated_text || '' : data.generated_text || '';
+  return data.choices?.[0]?.message?.content || '';
 }
 
 function parseArray(text) {
@@ -44,8 +47,8 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { tipo, regiao } = req.body;
-  const API_KEY = process.env.HUGGINGFACE_API_KEY;
-  if (!API_KEY) return res.status(500).json({ error: 'HUGGINGFACE_API_KEY nao configurada.' });
+  const API_KEY = process.env.GROQ_API_KEY;
+  if (!API_KEY) return res.status(500).json({ error: 'GROQ_API_KEY nao configurada.' });
 
   const reg = regiao || 'Brasil';
   const seed = Date.now();
@@ -71,7 +74,7 @@ Retorne APENAS array JSON com 4 objetos:
   }
 
   try {
-    const text = await chamarIA(prompt, API_KEY);
+    const text = await chamarGroq(prompt, API_KEY);
     const parsed = parseArray(text);
     return res.status(200).json({ oportunidades: parsed });
   } catch (err) {
