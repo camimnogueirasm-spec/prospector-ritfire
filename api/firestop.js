@@ -1,30 +1,25 @@
 async function chamarIA(prompt, apiKey) {
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const input = `<s>[INST] ${prompt} [/INST]`;
+
+  const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://prospector-ritfire.vercel.app',
-      'X-Title': 'Prospector Ritfire'
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'meta-llama/llama-3.3-70b-instruct:free',
-      max_tokens: 1000,
-      temperature: 0.5,
-      messages: [
-        { role: 'system', content: 'Voce retorna APENAS arrays JSON validos. Sem texto. Sem markdown. Apenas o array JSON.' },
-        { role: 'user', content: prompt }
-      ]
+      inputs: input,
+      parameters: { max_new_tokens: 1200, temperature: 0.5, return_full_text: false }
     })
   });
 
   if (!response.ok) {
     const err = await response.json();
-    throw new Error('OpenRouter error: ' + (err.error?.message || response.status));
+    throw new Error('HF error: ' + (err.error || response.status));
   }
 
   const data = await response.json();
-  return data.choices?.[0]?.message?.content || '';
+  return Array.isArray(data) ? data[0]?.generated_text || '' : data.generated_text || '';
 }
 
 function parseArray(text) {
@@ -49,23 +44,23 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { tipo, regiao } = req.body;
-  const API_KEY = process.env.OPENROUTER_API_KEY;
-  if (!API_KEY) return res.status(500).json({ error: 'OPENROUTER_API_KEY nao configurada.' });
+  const API_KEY = process.env.HUGGINGFACE_API_KEY;
+  if (!API_KEY) return res.status(500).json({ error: 'HUGGINGFACE_API_KEY nao configurada.' });
 
   const reg = regiao || 'Brasil';
   const seed = Date.now();
-  const produtos = 'MASSA RITWOOL, METACAULK 1200, MANTA RITWOOL SPUN, PLACA RITBOARD, AEROGEL RITFLEX, VERNIZ INTUMESCENTE, CONCRETO REFRATARIO, ARGAMASSA REFRATARIA, TIJOLO REFRATARIO RITBRICK, METACAULK COLAR INTUMESCENTE, PLACA SILTHERM';
-  const publicos = 'fazeadores de faca, forjadores, ceramistas, construtores de casas container, construtores de fornos de pizza, churrasqueiras, lareiras, oficinas mecanicas, pequenas construtoras';
+  const produtos = 'MASSA RITWOOL, METACAULK 1200, MANTA RITWOOL SPUN, PLACA RITBOARD, AEROGEL RITFLEX, VERNIZ INTUMESCENTE, CONCRETO REFRATARIO, TIJOLO REFRATARIO RITBRICK, METACAULK COLAR INTUMESCENTE, PLACA SILTHERM';
+  const publicos = 'fazeadores de faca, forjadores, ceramistas, construtores de casas container, fornos de pizza, churrasqueiras, lareiras, oficinas mecanicas, pequenas construtoras';
 
   let prompt = '';
   if (tipo === 'obras') {
     prompt = `Firestop Shop vende: ${produtos}. seed:${seed}
-Liste 4 projetos de PEQUENO e MEDIO porte no Brasil que precisam desses materiais. Regiao: ${reg}. Publicos: ${publicos}
+Liste 4 projetos PEQUENO e MEDIO porte no Brasil precisando desses materiais. Regiao: ${reg}. Publicos: ${publicos}
 Retorne APENAS array JSON com 4 objetos:
 [{"titulo":"projeto","empresa":"empresa","setor":"segmento","descricao":"necessidade","local":"Cidade/UF","valor":"R$ X","urgencia":"ALTA","cargo":"contato","email":"email@emp.com","telefone":"11912345678","site":"site.com","acao":"como vender"}]`;
   } else if (tipo === 'leads') {
     prompt = `Firestop Shop vende no Mercado Livre: ${produtos}. seed:${seed}
-Liste 4 perfis de compradores reais no Brasil. Regiao: ${reg}. Publicos: ${publicos}
+Liste 4 perfis de compradores no Brasil. Regiao: ${reg}. Publicos: ${publicos}
 Retorne APENAS array JSON com 4 objetos:
 [{"titulo":"perfil","empresa":"nome","setor":"segmento","produto":"produto ideal","descricao":"por que precisa","local":"Cidade/UF","email":"email@emp.com","telefone":"11912345678","site":"site.com","acao":"abordagem"}]`;
   } else if (tipo === 'mercadolivre') {
