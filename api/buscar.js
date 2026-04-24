@@ -1,3 +1,43 @@
+async function chamarGemini(prompt, apiKey) {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        maxOutputTokens: 1000,
+        temperature: 0.5,
+        responseMimeType: 'application/json'
+      }
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error('Gemini error: ' + (err.error?.message || response.status));
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  console.log('Gemini RAW:', text.slice(0, 300));
+  return text;
+}
+
+function parseArray(text) {
+  let clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+  const start = clean.indexOf('[');
+  const end = clean.lastIndexOf(']');
+  if (start === -1 || end === -1) throw new Error('Array nao encontrado');
+  clean = clean.slice(start, end + 1);
+  try {
+    return JSON.parse(clean);
+  } catch(e) {
+    // Tenta reparar truncado
+    let fixed = clean.replace(/,\s*\{[^}]*$/s, '') + ']';
+    return JSON.parse(fixed);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -6,8 +46,8 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { nicho, regiao, tipo, porte } = req.body;
-  const GROQ_API_KEY = process.env.GROQ_API_KEY;
-  if (!GROQ_API_KEY) return res.status(500).json({ error: 'Chave nao configurada.' });
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_API_KEY) return res.status(500).json({ error: 'GEMINI_API_KEY nao configurada.' });
 
   const nd = nicho === 'incendio'
     ? 'protecao passiva contra incendio: intumescente, corta-fogo, compartimentacao'
@@ -18,105 +58,42 @@ export default async function handler(req, res) {
 
   let prompt = '';
   if (tipo === 'obras') {
-    prompt = `Voce e um especialista em prospecção B2B. Liste 3 obras em andamento no Brasil que precisam de ${nd}. Regiao: ${reg}. [seed:${seed}]
-
-Retorne APENAS este JSON com 3 itens preenchidos (sem texto antes ou depois):
-[{"titulo":"nome da obra","empresa":"nome empresa","setor":"setor","descricao":"necessidade especifica","local":"Cidade/UF","valor":"R$ X","urgencia":"ALTA","cargo":"Gerente de Obras","email":"contato@empresa.com.br","telefone":"11912345678","site":"www.empresa.com.br","acao":"como abordar"}]`;
+    prompt = `Voce e especialista em prospeccao B2B no Brasil. [seed:${seed}]
+Liste 3 obras reais em andamento no Brasil que precisam de ${nd}. Regiao: ${reg}.
+Retorne um array JSON com exatamente 3 objetos:
+[{"titulo":"nome da obra","empresa":"empresa responsavel","setor":"setor","descricao":"necessidade especifica","local":"Cidade/UF","valor":"R$ X","urgencia":"ALTA","cargo":"cargo do contato","email":"contato@empresa.com.br","telefone":"11912345678","site":"www.empresa.com.br","acao":"como abordar"}]`;
   } else {
     const pd = porte === 'grande' ? 'grandes empresas com mais de 500 funcionarios'
       : porte === 'media' ? 'medias empresas de 50 a 500 funcionarios'
       : 'pequenas empresas com ate 50 funcionarios';
-    prompt = `Voce e um especialista em prospecção B2B. Liste 3 ${pd} no Brasil que usam ${nd}. Regiao: ${reg}. [seed:${seed}]
-
-Retorne APENAS este JSON com 3 itens preenchidos (sem texto antes ou depois):
+    prompt = `Voce e especialista em prospeccao B2B no Brasil. [seed:${seed}]
+Liste 3 ${pd} no Brasil que usam ${nd}. Regiao: ${reg}.
+Retorne um array JSON com exatamente 3 objetos:
 [{"titulo":"oportunidade","empresa":"nome empresa","porte":"${porte}","setor":"setor","descricao":"necessidade especifica","local":"Cidade/UF","valor":"R$ X","urgencia":"ALTA","cargo":"cargo ideal","email":"contato@empresa.com.br","telefone":"11912345678","site":"www.empresa.com.br","acao":"como abordar"}]`;
   }
 
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        max_tokens: 800,
-        temperature: 0.4,
-        messages: [
-          {
-            role: 'system',
-            content: 'Voce retorna APENAS arrays JSON validos. Sem texto. Sem markdown. Sem explicacoes. Apenas o array JSON.'
-          },
-          { role: 'user', content: prompt }
-        ]
-      })
-    });
-
-    if (!response.ok) {
-      const err = await response.json();
-      console.error('Groq error:', JSON.stringify(err));
-      return res.status(500).json({ error: 'Erro no Groq: ' + (err.error?.message || response.status) });
-    }
-
-    const data = await response.json();
-    const raw = data.choices[0].message.content.trim();
-    console.log('RAW response:', raw.slice(0, 500));
-
-    // Extrair array JSON da resposta
-    let jsonStr = raw;
-
-    // Remove markdown se houver
-    jsonStr = jsonStr.replace(/```json/gi, '').replace(/```/g, '').trim();
-
-    // Encontra o array
-    const arrStart = jsonStr.indexOf('[');
-    const arrEnd = jsonStr.lastIndexOf(']');
-
-    if (arrStart === -1 || arrEnd === -1) {
-      console.error('Array nao encontrado. Raw:', raw);
-      return res.status(500).json({ error: 'Resposta invalida da IA', raw: raw.slice(0, 200) });
-    }
-
-    jsonStr = jsonStr.slice(arrStart, arrEnd + 1);
-
-    let parsed;
-    try {
-      parsed = JSON.parse(jsonStr);
-    } catch (e1) {
-      console.error('Parse erro:', e1.message, 'jsonStr:', jsonStr.slice(0, 300));
-      // Tenta reparar JSON truncado
-      try {
-        let fixed = jsonStr.replace(/,\s*\{[^}]*$/s, '') + ']';
-        parsed = JSON.parse(fixed);
-        console.log('Parse reparado com sucesso');
-      } catch (e2) {
-        console.error('Parse reparado falhou:', e2.message);
-        return res.status(500).json({ error: 'JSON invalido: ' + e1.message });
-      }
-    }
-
+    const text = await chamarGemini(prompt, GEMINI_API_KEY);
+    const parsed = parseArray(text);
     const oportunidades = parsed.map(op => ({
-      titulo: String(op.titulo || ''),
-      empresa_alvo: String(op.empresa || ''),
-      porte: String(op.porte || porte || ''),
-      setor: String(op.setor || ''),
-      descricao: String(op.descricao || ''),
-      localizacao: String(op.local || ''),
-      valor_estimado: String(op.valor || ''),
-      urgencia: String(op.urgencia || 'MEDIA'),
-      contato_cargo: String(op.cargo || ''),
-      contato_email: String(op.email || ''),
+      titulo:           String(op.titulo || ''),
+      empresa_alvo:     String(op.empresa || ''),
+      porte:            String(op.porte || porte || ''),
+      setor:            String(op.setor || ''),
+      descricao:        String(op.descricao || ''),
+      localizacao:      String(op.local || ''),
+      valor_estimado:   String(op.valor || ''),
+      urgencia:         String(op.urgencia || 'MEDIA'),
+      contato_cargo:    String(op.cargo || ''),
+      contato_email:    String(op.email || ''),
       contato_telefone: String(op.telefone || ''),
-      site: String(op.site || ''),
-      como_abordar: String(op.acao || ''),
+      site:             String(op.site || ''),
+      como_abordar:     String(op.acao || ''),
     }));
-
     console.log('Sucesso:', oportunidades.length, 'oportunidades');
     return res.status(200).json({ oportunidades });
-
   } catch (err) {
-    console.error('Erro geral:', err.message);
+    console.error('Erro buscar:', err.message);
     return res.status(500).json({ error: err.message });
   }
 }
